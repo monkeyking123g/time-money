@@ -4,13 +4,17 @@ const db = require('./config/db')
 const cors = require('cors')
 const path = require("path");
 const multer = require("multer");
-const { request } = require('http');
-const { Image } = require('@mui/icons-material');
+
 
 const app = express();
- const  PORT = 3002;
+const  PORT = 3002;
+
+
 app.use(cors());
 app.use(express.json())
+app.use(express.static(__dirname + '/public'));
+app.use('/uploads', express.static('uploads'));
+
 
 
 // multer

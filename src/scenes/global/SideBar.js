@@ -5,7 +5,7 @@ import { Sidebar, Menu, MenuItem, useProSidebar} from 'react-pro-sidebar';
 import { Box, IconButton, Typography, useTheme} from '@mui/material';
 import { Link } from "react-router-dom";
 import { tokens } from "../../theme";
-// import Logo from "./cyberpank.jpg"
+
 import {reactLocalStorage} from 'reactjs-localstorage';
 // Icons 
 // import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -122,7 +122,7 @@ const SideBar = ({shadow = false, credential}) => {
                   alt="profile-user"
                   width="100px"
                   height="100px"
-                  src={Logo}
+                  src={`http://localhost:3002/${userCredensial.image}`}
                   style={{ 
                     cursor: "pointer", 
                     borderRadius: "50%", 
@@ -131,7 +131,7 @@ const SideBar = ({shadow = false, credential}) => {
               </Box>
               <Box textAlign="center">
                 <Typography
-                  variant="h2"
+                  variant="h5"
                   color={colors.primary[700]}
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
