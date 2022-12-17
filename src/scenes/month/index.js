@@ -1,4 +1,5 @@
 import { Box , useTheme} from '@mui/material';
+import { useState, useEffect } from 'react';
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from '../../theme';
 import { useStyleDataGrid } from '../../styleComponent';
@@ -8,6 +9,8 @@ import {
   randomTraderName,
   randomUpdatedDate,
 } from '@mui/x-data-grid-generator';
+import Axios  from 'axios';
+import { reactLocalStorage } from 'reactjs-localstorage';
 const rows = [
   {
     id: 1,
@@ -36,7 +39,7 @@ const rows = [
   {
     id: 5,
     month: randomTraderName(),
-    hours: 223,
+    total: 223,
     dateCreated: randomCreatedDate().toISOString().slice(0, 10),
     
   },
@@ -51,6 +54,31 @@ const Month = () => {
       green: colors.greenAccent[500],
       background : colors.primary[100]
     })
+    const [userCredensial, setUserCredensial] = useState(reactLocalStorage.getObject('user'))
+    const [rowsData, setRowsData] = useState([])
+
+    useEffect(() => {
+      const newData = []
+      const getTimeUser = Axios.get(`http://localhost:3002/api/get/month/${userCredensial.id}`).then((server)=>{
+          console.log(server)
+          if (server.status === 200){ 
+           let id = 1
+           server.data.map((el) => {
+            const updateData =  {
+               id : id,
+               month: el.month,
+               hours : el.total,
+               dateCreated : new Date(el.dateCreated).toISOString().slice(0, 10)
+              }
+            newData.push(updateData)
+            id += 1
+           
+          })
+        }
+          //  setRowsData(rowsData => [...rowsData, newdata])
+        setRowsData(newData)
+       })
+    }, []);
     const colums = [
         { field: "id", headerName: "ID", flex: 0.5 },
         // {field: "registrarId", headerName: "Registrar ID"},
@@ -83,76 +111,14 @@ const Month = () => {
             <Box
                 m="40px 0 0 0"
                 height="75vh"
-                sx={ CastomeStyleDataGrid.root
-                  // "& .MuiDataGrid-root": {
-                  //     border: "none",
-                  //     // backgroundColor: colors.primary[100],
-                  //     //color : colors.grey[800],
-                     
-                  //   },
-                  //   // svg : {
-                  //   //   color : "#fff !important"
-                  //   // },
-                  //   "& .MuiDataGrid-cell": {
-                  //     borderBottom: `2px solid ${colors.grey[800]}`,
-                  //     fontSize: "15px"
-                  //   },
-                  //   "& .name-column--cell": {
-                  //     color: colors.greenAccent[500],
-                  //     fontSize: "16px"
-                  //   },
-                  //   "& .MuiDataGrid-columnHeaders": {
-                  //     backgroundColor: colors.primary[500],
-                  //     borderBottom: "none",
-                  //     color: "#000",
-                  //     fontSize: "14px"
-                  //   },
-                  // //   ".MuiDataGrid-virtualScroller" : {
-                  // //     "background-color" : "#121212"
-                  // // },
-                  //   "& .MuiDataGrid-virtualScroller": {
-                  //     backgroundColor: colors.primary[100],
-                      
-                  //   },
-                  //   "& .MuiDataGrid-footerContainer": {
-                  //     borderTop: "none",
-                  //     backgroundColor: colors.primary[500],
-                  //     fontSize: "14px",
-                  //     color: colors.primary[100],
-
-                  //     svg : {
-                  //       color : "#000"
-                  //     }
-                  //   },
-                  //   "& .MuiCheckbox-root": {
-                  //     color: `${colors.greenAccent[200]} !important`,
-                  //   },
-                  //   "& .MuiDataGrid-toolbarContainer" : {
-                  //     backgroundColor : colors.primary[100],
-                     
-                  //   },
-                  //   "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                  //     color: `${colors.grey[300]} !important`,
-                    
-                  //   },
-                  //   ".MuiButtonBase-root-MuiButton-root" : {
-                  //     color : colors.greenAccent[500]
-                  //   },
-                  //   ".MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked": {
-                  //     color : colors.greenAccent[500]
-                  //   },
-                  //   "& .MuiTablePagination-root" : {
-                  //     color: "#121212",
-                  //   },
-              }   
-              
+                sx={ CastomeStyleDataGrid.root }   
             >
                 <DataGrid
                      //disableColumnFilter
                      disableColumnSelector
                      //disableDensitySelector
                 
-                    rows={rows}  
+                    rows={rowsData}  
                     columns={colums} 
                     components={{Toolbar : GridToolbar}}
                     sx={{  
