@@ -1,15 +1,98 @@
 import { ResponsiveLine } from "@nivo/line";
-import { montData as data } from "../data/testDate";
+// import { montData as data } from "../data/testDate";
 import { useTheme } from "@mui/material";
 import { tokens } from "../theme";
+import { useEffect, useState } from "react";
+import Axios from "axios";
+import { reactLocalStorage } from "reactjs-localstorage";
+const Data = [
+  {
+    id: "2022",
+    color: "#4cceac",
+    data: [
+      {
+        x: "genaio",
+        y: 0,
+      },
+      {
+        x: "febbraio",
+        y: 0,
+      },
+      {
+        x: "marzo",
+        y: 0,
+      },
+      {
+        x: "aprile",
+        y: 0,
+      },
+      {
+        x: "maggio",
+        y: 0,
+      },
+      {
+        x: "giugno",
+        y: 0,
+      },
+      {
+        x: "luglio",
+        y: 0,
+      },
+      {
+        x: "agosto",
+        y: 0,
+      },
+      {
+        x: "settembre",
+        y: 0,
+      },
+      {
+        x: "ottobre",
+        y: 0,
+      },
+      {
+        x: "novembre",
+        y: 0,
+      },
+      {
+        x: "dicembre",
+        y: 0,
+      },
+    ],
+  },
+];
 
 const LineChart = ({ isDashboard = false }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [userCredensial, setUserCredensial] = useState(
+    reactLocalStorage.getObject("user")
+  );
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const getTimeUser = Axios.get(
+      `http://localhost:3002/api/get/month/${userCredensial.id}`
+    ).then((server) => {
+      console.log(server.data);
+
+      if (server.status === 200) {
+        Data[0].data.forEach((month) => {
+          let ispresent = server.data.find(
+            (get) => get.month.replace(/\d+/g, "").trim() === month.x
+          );
+          if (ispresent) month.y = ispresent.total;
+        });
+        setData(Data);
+      }
+    });
+  }, []);
   return (
     <ResponsiveLine
       data={data}
       theme={{
+        background: colors.primary[100],
+        textColor: "#808080",
+
         axis: {
           domain: {
             line: {
@@ -23,7 +106,7 @@ const LineChart = ({ isDashboard = false }) => {
           },
           ticks: {
             line: {
-              stroke: colors.grey[100],
+              stroke: colors.greenAccent[500],
               strokeWidth: 1,
             },
             text: {
@@ -85,9 +168,9 @@ const LineChart = ({ isDashboard = false }) => {
       pointBorderColor={{ from: "serieColor", modifiers: [] }}
       pointLabelYOffset={-12}
       useMesh={true}
-      enableArea={true}
+      // enableArea={true}
       areaBaselineValue={100}
-      // isInteractive={false}
+      isInteractive={false}
       legends={[
         {
           anchor: "bottom-right",

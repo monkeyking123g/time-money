@@ -57,6 +57,14 @@ export const useStyledTextField = ({ color, globalColor }) => ({
       fontFamily: "helvetica",
       width: "250px",
     },
+    "& input::-webkit-datetime-edit-hour-field:focus": {
+      backgroundColor: `${color} !important`,
+      color: "#000",
+    },
+    "& input::-webkit-datetime-edit-minute-field:focus": {
+      backgroundColor: `${color} !important`,
+      color: "#000",
+    },
     "& input[type='time']::-webkit-calendar-picker-indicator": {
       display: "none",
       filter: "invert(0.5) sepia(1) saturate(5) hue-rotate(175deg)",

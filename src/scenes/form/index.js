@@ -1,24 +1,21 @@
 import * as React from "react";
-import { Box, useTheme, Button, TextField } from "@mui/material";
+import { Box, useTheme, Button, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import Header from "../../components/Header";
-import useMediaQuery from "@mui/material/useMediaQuery";
+
 import { tokens } from "../../theme";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import {
-  useStyledButton,
-  useStyleInputGlobal,
-  useStyledTextField,
-} from "../../styleComponent";
+import { useStyledButton, useStyledTextField } from "../../styleComponent";
 import dayjs from "dayjs";
-import "dayjs/locale/de";
+import "dayjs/locale/it";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import moment from "moment";
 import Axios from "axios";
 import { reactLocalStorage } from "reactjs-localstorage";
 import CustomizedSnackbars from "../../components/Alert";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const initialValues = {
   companyName: "",
@@ -26,10 +23,6 @@ const initialValues = {
   endHour: "",
   dateCreate: dayjs(new Date()).format("YYYY-MM-DD"),
 };
-// const phoneRegExp =
-//         /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-// const validaNumber = /^[0-9]+$/;
-// const moment = require("moment");
 const userSchema = yup.object().shape({
   companyName: yup.string(),
   startHour: yup.string(),
@@ -43,7 +36,7 @@ const userSchema = yup.object().shape({
 });
 
 const Form = () => {
-  const isNonMobile = useMediaQuery("min-width:600px");
+  const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [stateSuccessfully, setStateSuccessfully] = React.useState({
@@ -59,17 +52,19 @@ const Form = () => {
     color: colors.pink[600],
     hoverColor: colors.pink[500],
   });
-  const CustomInputGlobaol = useStyleInputGlobal({ color: colors.grey[800] });
+  // const CustomInputGlobaol = useStyleInputGlobal({ color: colors.grey[800] });
   const [value, setValue] = React.useState(
     dayjs(new Date()).format("YYYY-MM-DD")
   );
   const [userCredensial, setUserCredensial] = React.useState(
     reactLocalStorage.getObject("user")
   );
-  console.log(value);
+
   const handleFormSubmit = (values, actions) => {
-    if (values.dateCreate === "") {
-      values.dateCreate = value.toLocaleDateString();
+    // Slice number float
+    function precisionRound(number, precision) {
+      let factor = Math.pow(10, precision);
+      return Math.round(number * factor) / factor;
     }
 
     const startTimeTs = new Date(`2022-01-01 ${values.startHour}`).valueOf();
@@ -79,8 +74,10 @@ const Form = () => {
     const durationInMinutes = durationInSecondes / 60;
     const durationInHours = durationInMinutes / 60;
 
-    console.log(durationInHours);
-    const newValuse = Object.assign(values, { total: durationInHours });
+    console.log(precisionRound(durationInHours, 2));
+    const newValuse = Object.assign(values, {
+      total: precisionRound(durationInHours, 2),
+    });
     console.log(newValuse);
     Axios.post(
       `http://localhost:3002/api/create/time/${userCredensial.id}`,
@@ -110,9 +107,9 @@ const Form = () => {
         severity="success"
       />
       <Header
-        title="Add Hours"
+        title="Sum by Day "
         TitleColor={colors.pink[600]}
-        subtitle="Created a New Time of Day"
+        subtitle="Created a New Time by Day"
       ></Header>
       <Formik
         onSubmit={handleFormSubmit}
@@ -146,12 +143,12 @@ const Form = () => {
                 error={!!touched.companyName && !!errors.companyName}
                 helperText={touched.companyName && errors.companyName}
                 sx={{
-                  gridColumn: "span 2",
+                  gridColumn: isNonMobile ? "span 2" : "span 4",
                 }}
               />
               <LocalizationProvider
                 dateAdapter={AdapterDayjs}
-                adapterLocale={"de"}
+                adapterLocale={"it"}
               >
                 <DatePicker
                   label="Date Created"
@@ -171,7 +168,7 @@ const Form = () => {
                       fullWidth
                       {...params}
                       sx={{
-                        gridColumn: "span 2",
+                        gridColumn: isNonMobile ? "span 2" : "span 4",
                         svg: { fill: colors.primary[500] },
                       }}
                     />
@@ -195,7 +192,7 @@ const Form = () => {
                   "& :hover fieldset": {
                     borderColor: "#111",
                   },
-                  gridColumn: "span 2",
+                  gridColumn: isNonMobile ? "span 2" : "span 4",
                 }}
               />
               <TextField
@@ -212,16 +209,21 @@ const Form = () => {
                   shrink: true,
                 }}
                 sx={{
-                  "& :hover fieldset": {
-                    borderColor: "#111",
-                  },
-                  gridColumn: "span 2",
+                  // "& :hover fieldset": {
+                  //   borderColor: "#111",
+                  // },
+                  gridColumn: isNonMobile ? "span 2" : "span 4",
                 }}
               />
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" variant="containe" sx={CustomButton.root}>
-                Conferm
+              <Button
+                type="submit"
+                variant="containe"
+                fullWidth
+                sx={CustomButton.root}
+              >
+                <Typography>Conferm</Typography>
               </Button>
             </Box>
           </form>

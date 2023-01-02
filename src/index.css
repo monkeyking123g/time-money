@@ -1,25 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,600;0,700;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,600;0,700;1,400&display=swap");
 html,
 body,
 #root,
 .app,
 .wrapper {
+  background: #212121;
   height: 100%;
   width: 100%;
+  /* overflow: hidden; */
+  font-family: "Source Sans Pro", sans-serif;
   overflow: hidden;
-  font-family: 'Source Sans Pro', sans-serif;
+  scrollbar-width: thin;
 }
-::-webkit-scrollbar{
+::-webkit-scrollbar {
   width: 10px;
+  height: 10px;
 }
 /*  Track */
 ::-webkit-scrollbar-track {
   background: #292929;
 }
 /* Handle */
-::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb {
   background: #777;
 }
+
 /* ::-webkit-scrollbar-track:hover{
   background: #555;
 } */
@@ -27,85 +32,21 @@ body,
 .app {
   position: relative;
   display: flex;
-  background: #212121; 
+  /* background: #212121; */
   color: #fff;
 }
-.image-singUp{
+.image-singUp {
   width: 60px;
   height: 60px;
   border-radius: 50%;
   object-fit: cover;
-  
 }
-
- /* input:-webkit-autofill,
- input:-webkit-autofill:hover,
- input:-webkit-autofill:focus,
- textarea:-webkit-autofill,
- textarea:-webkit-autofill:hover,
- textarea:-webkit-autofill:focus,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus {
-  border: 0;
-  -webkit-text-fill-color: #edf0f1;
-  -webkit-box-shadow: none;
-  -webkit-transition: background-color 5000s ease-in-out 0s;
-  transition: background-color 5000s ease-in-out 0s;
-} */
-/* .simple-container{
-  width: 100%;
-  height: 100%;
-  display: flex;
-  overflow: hidden;
-  
+@media screen and (max-width: 600px) {
+  html,
+  body,
+  #root,
+  .app,
+  .wrapper {
+    overflow: auto;
+  }
 }
-.table-content{
-  display: inline-block;
-  /* display: flex;
-  flex-wrap: wrap; 
-  width: 50%;
-  height: 100%;
-}
-.other-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 50%;
-  height: 100%;
-}
-
-.content-icon { 
-  display: flex;
-} */
-/* input {
-  padding: 8px;
-} */
-/* SIDE BAR */
-/* .menu-item {
-  color: #111111;
-}
-.lkTtqM:hover {
-  background-color: none;
-}
-
- .active:hover {
-  background-color: transparent !important
-}
-.sidebar-inner {
-  background: #2c4d84 !important
-}
-icon-wrapper {
-  background-color: transparent !important
-}
-.inner-item{
-  padding: 5px 35px 5px 20px !important
-}
-.inner-item:hover {
-  color: #07f
-}
-.menu-item.active{
-  color: blue
- 
-} */

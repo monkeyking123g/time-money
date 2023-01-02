@@ -17,14 +17,11 @@ export default function CustomizedSnackbars({
     if (reason === "clickaway") {
       return;
     }
-    setSnackbarOpen({ state: false, title: "" });
+    setSnackbarOpen({ state: false, title: SnackbarOpen.title });
   };
 
   return (
     <Stack spacing={2} sx={{ width: "100%" }}>
-      {/* <Button variant="outlined" onClick={handleClick}>
-        Open success snackbar
-      </Button> */}
       <Snackbar
         open={SnackbarOpen.state}
         autoHideDuration={6000}

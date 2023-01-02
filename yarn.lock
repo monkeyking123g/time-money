@@ -1407,6 +1407,13 @@
   dependencies:
     tslib "^2.1.0"
 
+"@fullcalendar/core@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-6.0.1.tgz#145f66c5b256927c2b93626c16183a3986b4c245"
+  integrity sha512-JMBRbWrez8hKhS1wvqAW3TBSo58/xRmDHUu07x/lywdct4gD7Z9QphC/VDNqbRQpTknHHmOjMqSmauEwQ6wbaA==
+  dependencies:
+    preact "^10.0.5"
+
 "@fullcalendar/daygrid@^5.11.3", "@fullcalendar/daygrid@~5.11.3":
   version "5.11.3"
   resolved "https://registry.yarnpkg.com/@fullcalendar/daygrid/-/daygrid-5.11.3.tgz#6bc1f956c95f84438428aa6e7a106c863a791a70"
@@ -8177,6 +8184,13 @@ neo-async@^2.6.2:
   resolved "https://registry.npmjs.org/neo-async/-/neo-async-2.6.2.tgz"
   integrity sha512-Yd3UES5mWCSqR+qNT93S3UoYUkqAZ9lLg8a7g9rimsWmYGK8cVToA4/sF3RrshdyV3sAGMXVUmpMYOw+dLpOuw==
 
+ng-fullcalendar@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/ng-fullcalendar/-/ng-fullcalendar-2.0.3.tgz#9e51f4052a748540460ae04d23c3d4cce9557073"
+  integrity sha512-rE26DDWdzQhVdtItI1Whpyv++BJOM1u3rnqBB0w6khXWkdxYYrJqdmkkYHsNeet37gdzW3tguTKIs65DS0B9lQ==
+  dependencies:
+    tslib "^1.9.0"
+
 no-case@^3.0.4:
   version "3.0.4"
   resolved "https://registry.npmjs.org/no-case/-/no-case-3.0.4.tgz"
@@ -9240,6 +9254,11 @@ postcss@^8.4.19:
     nanoid "^3.3.4"
     picocolors "^1.0.0"
     source-map-js "^1.0.2"
+
+preact@^10.0.5:
+  version "10.11.3"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.11.3.tgz#8a7e4ba19d3992c488b0785afcc0f8aa13c78d19"
+  integrity sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==
 
 prelude-ls@^1.2.1:
   version "1.2.1"
@@ -10872,7 +10891,7 @@ tsconfig-paths@^3.14.1:
     minimist "^1.2.6"
     strip-bom "^3.0.0"
 
-tslib@^1.10.0, tslib@^1.8.1:
+tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0:
   version "1.14.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==

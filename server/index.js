@@ -80,7 +80,7 @@ app.get("/api/get/month/:id", (req, res) => {
     res.send(result);
   });
 });
-
+// Create  time of day
 app.post("/api/create/time/:id", (req, res) => {
   const id = req.params.id;
   const company = req.body.companyName;
@@ -100,118 +100,53 @@ app.post("/api/create/time/:id", (req, res) => {
     }
   );
 });
+// Create  time of year
+app.post("/api/create/month/:id", (req, res) => {
+  const id = req.params.id;
+  const month = req.body.month;
+  const total = req.body.hoursDone;
+  const dateCreated = req.body.dateCreate;
 
-// app.post('/api/create/user', (req,res)=> {
+  db.query(
+    "INSERT INTO MonthTime (id_user, month, total, dateCreated) VALUES (?,?,?,?)",
+    [id, month, total, dateCreated],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(400);
+      }
+      res.send(result);
+      res.status(200);
+    }
+  );
+});
 
-//      const email = req.body.email;
-//      const password = req.body.password;
-//      const imageUrl = req.body.imageUrl;
-//      const earning_hour = req.body.earning_hour;
+// Delete SQl Query
+app.delete("/api/delete/time/:id", (req, res) => {
+  const id = req.params.id;
 
-//       db.query("INSERT INTO user (email, password, image_url, earning_hour) VALUES (?,?,?,?)",[email,password,imageUrl,earning_hour], (err,result)=>{
-//          if(err) {
-//          console.log(err)
-//          }
-//          console.log(result)
-//   });   })
+  db.query("DELETE FROM DayTime WHERE ID= ?", id, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400);
+    }
+    res.send(result);
+    res.status(200);
+  });
+});
+app.delete("/api/delete/month/:id", (req, res) => {
+  const id = req.params.id;
 
-// Route to get one post
-// app.get("/api/getFromId/:id", (req,res)=>{
-
-// const id = req.params.id;
-//  db.query("SELECT * FROM posts WHERE id = ?", id,
-//  (err,result)=>{
-//     if(err) {
-//     console.log(err)
-//     }
-//     res.send(result)
-//     });   });
-
-// // Route for creating the post
-// app.post('/api/create', (req,res)=> {
-
-// const username = req.body.userName;
-// const title = req.body.title;
-// const text = req.body.text;
-
-// db.query("INSERT INTO posts (title, post_text, user_name) VALUES (?,?,?)",[title,text,username], (err,result)=>{
-//    if(err) {
-//    console.log(err)
-//    }
-//    console.log(result)
-// });   })
-
-// // Route to like a post
-// app.post('/api/like/:id',(req,res)=>{
-
-// const id = req.params.id;
-// db.query("UPDATE posts SET likes = likes + 1 WHERE id = ?",id, (err,result)=>{
-//     if(err) {
-//    console.log(err)   }
-//    console.log(result)
-//     });
-// });
-
-// // Route to delete a post
-
-// app.delete('/api/delete/:id',(req,res)=>{
-// const id = req.params.id;
-
-// db.query("DELETE FROM posts WHERE id= ?", id, (err,result)=>{
-// if(err) {
-// console.log(err)
-//         } }) })
+  db.query("DELETE FROM MonthTime WHERE ID= ?", id, (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(400);
+    }
+    res.send(result);
+    res.status(200);
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
 });
-// const express = require('express');
-// const mysql = require('mysql');
-// const { body, validationResult } = require('express-validator');
-// const  PORT = 3002;
-// const app = express();
-
-// const database = mysql.createConnection({
-//     user: process.env.DB_USER,
-//     password: process.env.DB_PASSWORD,
-//     database: process.env.DB_NAME
-// });
-
-// app.get('/init', (req, res) => {
-//     const sqlQuery =  'CREATE TABLE IF NOT EXISTS emails(id int AUTO_INCREMENT, firstname VARCHAR(50), lastname VARCHAR(50), email VARCHAR(50), PRIMARY KEY(id))';
-
-//     database.query(sqlQuery, (err) => {
-//         if (err) throw err;
-
-//         res.send('Table created!')
-//     });
-// });
-// app.post('/subscribe',
-//     body('email').isEmail().normalizeEmail(),
-//     body('firstname').not().isEmpty().escape(),
-//     body('lastname').not().isEmpty().escape(),
-//     (req, res) => {
-//         const errors = validationResult(req);
-
-//         if (errors.array().length > 0) {
-//             res.send(errors.array());
-//         } else {
-//             const subscriber = {
-//                 firstname: req.body.firstname,
-//                 lastname: req.body.lastname,
-//                 email: req.body.email
-//             };
-
-//             const sqlQuery = 'INSERT INTO emails SET ?';
-
-//             database.query(sqlQuery, subscriber, (err, row) => {
-//                 if (err) throw err;
-
-//                 res.send('Subscribed successfully!');
-//             });
-//         }
-// });
-
-// app.listen(PORT, ()=>{
-//          console.log(`Server is running`)
-//  })

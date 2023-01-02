@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
+    "@fullcalendar/core": "^6.0.1",
     "@fullcalendar/daygrid": "^5.11.3",
     "@fullcalendar/interaction": "^5.11.3",
     "@fullcalendar/list": "^5.11.3",
@@ -32,6 +33,7 @@
     "fullcalendar": "^5.11.3",
     "install": "^0.13.0",
     "moment": "^2.29.4",
+    "ng-fullcalendar": "^2.0.3",
     "node-sass": "^7.0.3",
     "postcss-calc": "^8.2.4",
     "postcss-custom-properties": "^13.0.0",

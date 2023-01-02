@@ -7,8 +7,7 @@ import * as yup from "yup";
 import Axios from "axios";
 import Grid from "@mui/material/Grid";
 import { tokens } from "../../theme";
-import { useStyledTextField, useStyleInputGlobal } from "../../styleComponent";
-import { create } from "yup/lib/Reference";
+import { useStyledTextField } from "../../styleComponent";
 
 const initialValues = {
   email: "",
@@ -18,8 +17,6 @@ const initialValues = {
 };
 const validaNumber = /^[0-9]+$/;
 const userSchema = yup.object().shape({
-  // companyName : yup.string().required("required"),
-
   email: yup.string().email(),
   password: yup
     .string()
@@ -46,7 +43,6 @@ const SingUn = ({ handleSingIn, imageUser }) => {
     color: colors.greenAccent[500],
     globalColor: colors.grey[800],
   });
-  const CustomInputGlobaol = useStyleInputGlobal({ color: colors.grey[800] });
 
   const handleFormSubmit = (values) => {
     const formData = new FormData();
@@ -60,16 +56,6 @@ const SingUn = ({ handleSingIn, imageUser }) => {
         return navigate("/");
       }
     });
-
-    // console.log(image_url)
-    // Axios.post('http://localhost:3002/api/create/user', {
-    //    email: values.email,
-    //    password: values.password,
-    //    imageUrl: image_url,
-    //    earning_hour: values.earningHour
-    //  })
-    //  console.log("Created new user" )
-    //  return navigate("/")
   };
 
   return (
@@ -102,7 +88,6 @@ const SingUn = ({ handleSingIn, imageUser }) => {
               value={values.email}
               error={!!touched.email && !!errors.email}
               helperText={touched.email && errors.email}
-              // sx={{ border: "1px solid #111"}}
               autoFocus
             />
             <TextField
@@ -185,7 +170,6 @@ const SingUn = ({ handleSingIn, imageUser }) => {
                 </Button>
               </Grid>
             </Grid>
-            {/* <Copyright sx={{ mt: 5 }} /> */}
           </Box>
         </form>
       )}

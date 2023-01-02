@@ -1,21 +1,21 @@
 import React from "react";
 import { useState } from "react";
 import { CssBaseline, ThemeProvider } from "@mui/material";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { reactLocalStorage } from "reactjs-localstorage";
-
+// import { reactLocalStorage } from "reactjs-localstorage";
 // Global components
 import Topbar from "./scenes/global/TopBar";
 import SideBar from "./scenes/global/SideBar";
 
 // Scenes components
-import Contacts from "./scenes/time";
+import ListTime from "./scenes/time";
 import Month from "./scenes/month";
 import Form from "./scenes/form";
 import Calendar from "./scenes/calendar";
 // import Bar from "./scenes/bar"
 import Line from "./scenes/line";
-import FormMonth from "./scenes/formMonth";
+import FormMonth from "./scenes/form/month";
 import SingIn from "./scenes/login";
 
 import { ProSidebarProvider } from "react-pro-sidebar";
@@ -27,20 +27,18 @@ function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   const [shadows, setShadows] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [userCredensial, setUserCredensial] = useState({});
-  let location = useLocation();
-  // const handleToggle = (component) => {
-  //   setShadows(true);
-  //   return component
-  // };
-  const pullUserCredensial = (data) => {
-    console.log(data);
-    // reactLocalStorage.setObject("user", data);
 
-    setUserCredensial(data);
-    // window.location.reload(false);
-  };
+  const [userCredensial, setUserCredensial] = useState(
+    reactLocalStorage.getObject("user")
+  );
+  let navigate = useNavigate();
+  let location = useLocation();
+
+  React.useEffect(() => {
+    if (JSON.stringify(userCredensial) === "{}") {
+      return navigate("/singin");
+    }
+  }, [userCredensial]);
 
   React.useEffect(() => {
     if (location.pathname === "/singin") {
@@ -48,47 +46,29 @@ function App() {
     } else setShadows(false);
   }, [location]);
 
-  const handleLoggeind = () => {
-    setLoggedIn(true);
-  };
-
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <ProSidebarProvider>
           <div className="app">
-            <ProSidebarProvider>
-              <SideBar
-                isSidebar={isSidebar}
-                shadow={shadows}
-                credential={userCredensial}
-              />
-            </ProSidebarProvider>
+            <SideBar
+              isSidebar={isSidebar}
+              shadow={shadows}
+              credential={userCredensial}
+            />
             <div className="wrapper">
-              {/* <AppBar></AppBar> */}
               <Topbar setIsSidebar={setIsSidebar} shadow={shadows} />
               <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/admin" element={<Team />} />
-                <Route path="/contacts" element={<Contacts />} />
-                <Route path="/invoices" element={<Month />} />
-                // form Created
+                <Route path="/allTime" element={<ListTime />} />
+                <Route path="/allMonth" element={<Month />} />
                 <Route path="/form" element={<Form />} />
                 <Route path="/formMonth" element={<FormMonth />} />
                 <Route path="/calendar" element={<Calendar />} />
-                {/* <Route path="/bar" element={<Bar />} />  */}
                 <Route path="/line" element={<Line />} />
-                <Route
-                  replace
-                  path="/singin"
-                  element={
-                    <SingIn
-                      loggeIn={handleLoggeind}
-                      credensial={pullUserCredensial}
-                    />
-                  }
-                />
+                <Route replace path="/singin" element={<SingIn />} />
                 <Route />
               </Routes>
             </div>
