@@ -1,12 +1,11 @@
 import React from "react";
 import { useState } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../theme";
 import { AdminPanelSettingsOutlined } from "@mui/icons-material";
 import Header from "../../components/Header";
 import { reactLocalStorage } from "reactjs-localstorage";
-
+import { DataGrid } from "@mui/x-data-grid";
 // Style component
 import { useStyleDataGrid } from "../../styleComponent";
 
@@ -92,6 +91,9 @@ const Team = () => {
           sx={{
             "& .MuiDataGrid-cell:focus": {
               outline: "0",
+            },
+            "& .MuiDataGrid-row.Mui-selected": {
+              backgroundColor: "#2c2c2c !important",
             },
           }}
         />

@@ -21,7 +21,7 @@ const Month = () => {
   useEffect(() => {
     const newData = [];
     const getTimeUser = Axios.get(
-      `http://localhost:3002/api/get/month/${userCredensial.id}`
+      `${process.env.REACT_APP_DOMAIN}/api/get/month/${userCredensial.id}`
     ).then((server) => {
       if (server.status === 200) {
         let nam = 1;
@@ -54,7 +54,7 @@ const Month = () => {
   const handlePurge = () => {
     const newRows = [...rows];
     selectedRows.forEach((i) => {
-      Axios.delete(`http://localhost:3002/api/delete/month/${i}`);
+      Axios.delete(`${process.env.REACT_APP_DOMAIN}/api/delete/month/${i}`);
       removeObjectWithId(newRows, i);
     });
     setSelectedRows([]);

@@ -1,54 +1,17 @@
-import { Button, TextField } from "@mui/material";
-import { withStyles } from "@material-ui/core/styles";
-
-// components castomizet
-// export const useStyledTextField = ({ color }) =>
-//   withStyles({
-//     root: {
-//       "& input[type=time]": {
-//         border: "none",
-//         fontSize: "16px",
-//         fontFamily: "helvetica",
-//         width: "250px",
-//       },
-//       "& input[type='time']::-webkit-calendar-picker-indicator": {
-//         display: "none",
-//         filter: "invert(0.5) sepia(1) saturate(5) hue-rotate(175deg)",
-//       },
-//       "& label.Mui-focused": {
-//         color: "white",
-//       },
-//       "& .MuiInput-underline:after": {
-//         borderBottomColor: "none",
-//       },
-//       "& .MuiOutlinedInput-root": {
-//         "& fieldset": {
-//           borderColor: "none",
-//         },
-//         "&:hover fieldset": {
-//           borderColor: color,
-//         },
-//         "&.Mui-focused fieldset": {
-//           border: `2px solid ${color}`,
-//         },
-//       },
-//     },
-//   })(TextField);
-
 export const useStyledTextField = ({ color, globalColor }) => ({
   root: {
-    "input:-webkit-autofill": {
+    "& input:-webkit-autofill": {
       "-webkit-box-shadow": `0 0 0 30px ${globalColor} inset !important`,
-      "-webkit-text-fill-color": "#fff",
-      caretColor: "#fff",
+      "-webkit-text-fill-color": "#fff !important",
+      caretColor: "#fff !important",
     },
-    "input:-webkit-autofill:hover": {
-      "-webkit-box-shadow": `0 0 0 30px ${globalColor} inset !important`,
-    },
-    "input:-webkit-autofill:focus": {
+    "& input:-webkit-autofill:hover": {
       "-webkit-box-shadow": `0 0 0 30px ${globalColor} inset !important`,
     },
-    "input:-webkit-autofill:active": {
+    "& input:-webkit-autofill:focus": {
+      "-webkit-box-shadow": `0 0 0 30px ${globalColor} inset !important`,
+    },
+    "& input:-webkit-autofill:active": {
       "-webkit-box-shadow": `0 0 0 30px ${globalColor} inset !important`,
     },
     "& input[type=time]": {
@@ -99,24 +62,24 @@ export const useStyledButton = ({ color, hoverColor }) => ({
   },
 });
 
-export const useStyleInputGlobal = ({ color }) => ({
-  root: {
-    "input:-webkit-autofill": {
-      "-webkit-box-shadow": `0 0 0 30px ${color} inset !important`,
-      "-webkit-text-fill-color": "#fff",
-      "caret-color": "#141414",
-    },
-    "input:-webkit-autofill:hover": {
-      "-webkit-box-shadow": `0 0 0 30px ${color} inset !important`,
-    },
-    "input:-webkit-autofill:focus": {
-      "-webkit-box-shadow": `0 0 0 30px ${color} inset !important`,
-    },
-    "input:-webkit-autofill:active": {
-      "-webkit-box-shadow": `0 0 0 30px ${color} inset !important`,
-    },
-  },
-});
+// export const useStyleInputGlobal = ({ color }) => ({
+//   root: {
+//     "input:-webkit-autofill": {
+//       "-webkit-box-shadow": `0 0 0 30px ${color} inset !important`,
+//       "-webkit-text-fill-color": "#fff",
+//       "caret-color": "#141414",
+//     },
+//     "input:-webkit-autofill:hover": {
+//       "-webkit-box-shadow": `0 0 0 30px ${color} inset !important`,
+//     },
+//     "input:-webkit-autofill:focus": {
+//       "-webkit-box-shadow": `0 0 0 30px ${color} inset !important`,
+//     },
+//     "input:-webkit-autofill:active": {
+//       "-webkit-box-shadow": `0 0 0 30px ${color} inset !important`,
+//     },
+//   },
+// });
 
 export const useStyleDataGrid = ({ primary, green, background }) => ({
   root: {

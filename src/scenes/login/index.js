@@ -8,11 +8,10 @@ import CssBaseline from "@mui/material/CssBaseline";
 
 // Icons
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-// import Link from '@mui/material/Link';
 
 import Paper from "@mui/material/Paper";
 import { Box, useTheme, IconButton } from "@mui/material";
-// import { withStyles } from "material-ui/styles";
+
 import Grid from "@mui/material/Grid";
 
 import Typography from "@mui/material/Typography";
@@ -47,6 +46,9 @@ export default function SignInSide() {
     };
     fileReader.readAsDataURL(file);
   };
+  // React.useEffect(() => {
+  //   uploadImage(logo);
+  // }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -58,8 +60,7 @@ export default function SignInSide() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage:
-              "url(https://images.unsplash.com/photo-1541336032412-2048a678540d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80)",
+            backgroundImage: "url(https://source.unsplash.com/random)",
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"
@@ -85,7 +86,13 @@ export default function SignInSide() {
                 variant="contained"
                 component="label"
               >
-                <img src={fileChange} className="image-singUp" />
+                <img
+                  src={
+                    fileChange ||
+                    "https://www.3dproduction.it/public/no_attore.jpg?nocache="
+                  }
+                  className="image-singUp"
+                />
 
                 <input
                   type="file"

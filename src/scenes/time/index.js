@@ -71,7 +71,7 @@ const ListTime = () => {
   useEffect(() => {
     const newData = [];
     const getTimeUser = Axios.get(
-      `http://localhost:3002/api/get/time/${userCredensial.id}`
+      `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
     ).then((server) => {
       if (server.status === 200) {
         let nam = 1;
@@ -106,7 +106,7 @@ const ListTime = () => {
   const handlePurge = () => {
     const newRows = [...rows];
     selectedRows.forEach((i) => {
-      Axios.delete(`http://localhost:3002/api/delete/time/${i}`);
+      Axios.delete(`${process.env.REACT_APP_DOMAIN}/api/delete/time/${i}`);
       removeObjectWithId(newRows, i);
     });
     setSelectedRows([]);

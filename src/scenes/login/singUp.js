@@ -8,6 +8,7 @@ import Axios from "axios";
 import Grid from "@mui/material/Grid";
 import { tokens } from "../../theme";
 import { useStyledTextField } from "../../styleComponent";
+import { reactLocalStorage } from "reactjs-localstorage";
 
 const initialValues = {
   email: "",
@@ -50,12 +51,46 @@ const SingUn = ({ handleSingIn, imageUser }) => {
     formData.append("email", values.email);
     formData.append("password", values.password);
     formData.append("earning_hour", values.earningHour);
-    Axios.post("http://localhost:3002/upload", formData, {}).then((res) => {
-      console.log(res);
-      if (res.status === 200) {
-        return navigate("/");
-      }
-    });
+    // Axios.post("http://localhost:3002/upload", formData, {}).then((res) => {
+    //   console.log(res);
+    //   if (res.status === 200) {
+
+    //   }
+    // });
+    const postGet = async () => {
+      const post = await Axios.post(
+        `${process.env.REACT_APP_DOMAIN}/upload`,
+        formData,
+        {}
+      ).then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+        }
+      });
+      const get = await Axios.get(
+        `${process.env.REACT_APP_DOMAIN}/api/get/user`
+      ).then((data) => {
+        data.data.forEach((user) => {
+          if (
+            user.email === values.email &&
+            user.password === values.password
+          ) {
+            console.log("User faund !");
+            const dataUser = {
+              id: user.ID,
+              email: user.email,
+              password: user.password,
+              image: user.image_url,
+              ernin_hour: user.earning_hour,
+            };
+            reactLocalStorage.setObject("user", dataUser);
+          }
+        });
+      });
+
+      return navigate("/");
+    };
+    postGet();
   };
 
   return (
@@ -72,10 +107,11 @@ const SingUn = ({ handleSingIn, imageUser }) => {
         handleChange,
         handleSubmit,
       }) => (
-        <form onSubmit={handleSubmit} enctype="multipart/form-data">
+        //enctype="multipart/form-data"
+        <form onSubmit={handleSubmit}>
           <Box mt={1} sx={CustomTextField.root}>
             <TextField
-              borderColor={colors.greenAccent[500]}
+              // borderColor={colors.greenAccent[500]}
               margin="normal"
               required
               fullWidth
@@ -102,7 +138,7 @@ const SingUn = ({ handleSingIn, imageUser }) => {
               value={values.password}
               error={!!touched.password && !!errors.password}
               helperText={touched.password && errors.password}
-              autoComplete="current-password"
+              // autoComplete="current-password"
             />
             <TextField
               margin="normal"
@@ -113,14 +149,14 @@ const SingUn = ({ handleSingIn, imageUser }) => {
               type="password"
               onBlur={handleBlur}
               onChange={handleChange}
-              value={values.password2}
+              value={values.passwordConfirmation}
               error={
                 !!touched.passwordConfirmation && !!errors.passwordConfirmation
               }
               helperText={
                 touched.passwordConfirmation && errors.passwordConfirmation
               }
-              autoComplete="current-password"
+              // autoComplete="current-password"
             />
             <TextField
               margin="normal"
@@ -132,7 +168,7 @@ const SingUn = ({ handleSingIn, imageUser }) => {
               value={values.earningHour}
               error={!!touched.earningHour && !!errors.earningHour}
               helperText={touched.earningHour && errors.earningHour}
-              label="Earning per hour"
+              label="Salary to Hourly"
               name="earningHour"
               InputProps={{
                 startAdornment: (

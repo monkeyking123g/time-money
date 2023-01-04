@@ -47,7 +47,7 @@ const SideBar = ({ shadow = false, credential }) => {
   const userImage =
     userCredensial.image == ""
       ? undefined
-      : `http://localhost:3002/${userCredensial.image}`;
+      : `${process.env.REACT_APP_DOMAIN}/${userCredensial.image}`;
   const [selected, setSelected] = useState(
     reactLocalStorage.getObject("icon").select
   );

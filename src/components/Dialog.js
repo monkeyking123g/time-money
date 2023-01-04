@@ -2,7 +2,6 @@ import * as React from "react";
 import { Button, Dialog, useTheme, Typography, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import Axios from "axios";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -38,9 +37,6 @@ export default function FormDialog({ clous, pull }) {
     setOpen(true);
   };
 
-  // const C = () => {
-  //   setOpen(false);
-  // };
   const handleFormSubmit = (value) => {
     console.log(value);
     pull(value);
@@ -82,46 +78,12 @@ export default function FormDialog({ clous, pull }) {
                     fontFamily: "helvetica",
                     width: "250px",
                   },
-                  // "input[type=time]::-webkit-datetime-edit-fields-wrapper" : {
-                  //   display: "flex"
-                  // },
-                  // "input[type=time]::-webkit-datetime-edit-text" : {
-                  //   padding: "19px 4px",
-                  // },
-                  // //  Hour */
-                  // "input[type=time]::-webkit-datetime-edit-hour-field" : {
-                  //     backgroundColor: "trasparent",
-                  //     color: "#000",
-                  //     borderRadius: "15%",
-                  //     padding: "19px 13px"
-                  // },
-                  // "input[type=time]::-webkit-datetime-edit-minute-field" : {
-                  //   // backgroundColor: colors.greenAccent[500],
-                  //   color: "#000",
-                  //   borderRadius: "15%",
-                  //   padding: "19px 13px"
-                  // },
-                  // "input[type=time]::-webkit-datetime-edit-ampm-field" : {
-                  //   backgroundColor: "#7155d3",
-                  //   borderRadius: "15%",
-                  //   color: "#000",
-                  //   padding: "19px 13px"
-                  // },
-                  // "input[type=time]::-webkit-clear-button" : {
-                  //   display: "none"
-                  // },
-                  // "input[type=time]::-webkit-inner-spin-button"  : {
-                  //   display: "none"
-                  // },
+
                   "input[type='time']::-webkit-calendar-picker-indicator": {
                     display: "none",
                     filter:
                       "invert(0.5) sepia(1) saturate(5) hue-rotate(175deg)",
                   },
-
-                  // 'input[type="number"]::-webkit-inner-spin-button' : {
-                  //                          "-webkit-appearance": "none !important",
-                  //   }
                 }}
               >
                 <DialogContentText

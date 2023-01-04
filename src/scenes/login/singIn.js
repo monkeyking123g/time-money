@@ -1,6 +1,5 @@
 import { Box, useTheme, Typography, TextField, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useStyleInputGlobal } from "../../styleComponent";
 import { useState, useEffect } from "react";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
@@ -8,6 +7,7 @@ import Grid from "@mui/material/Grid";
 import { tokens } from "../../theme";
 import Axios from "axios";
 import CustomizedSnackbars from "../../components/Alert";
+import { useStyledTextField } from "../../styleComponent";
 
 import { reactLocalStorage } from "reactjs-localstorage";
 
@@ -16,7 +16,11 @@ const SingIn = ({ handleSingUp }) => {
   const colors = tokens(theme.palette.mode);
   const [authenticated, isAuthenticated] = useState(false);
   const [stateError, setStateError] = useState({ state: false, title: "" });
-  const CustomInputGlobaol = useStyleInputGlobal({ color: colors.grey[800] });
+  // const CustomInputGlobaol = useStyleInputGlobal({ color: colors.grey[800] });
+  const CustomTextField = useStyledTextField({
+    color: colors.pink[500],
+    globalColor: colors.grey[800],
+  });
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -33,7 +37,7 @@ const SingIn = ({ handleSingUp }) => {
     const email = data.get("email");
     const password = data.get("password");
 
-    Axios.get("http://localhost:3002/api/get/user").then((data) => {
+    Axios.get(`${process.env.REACT_APP_DOMAIN}/api/get/user`).then((data) => {
       console.log(data.data);
 
       data.data.forEach((user) => {
@@ -47,20 +51,10 @@ const SingIn = ({ handleSingUp }) => {
           };
           reactLocalStorage.setObject("user", dataUser);
           isAuthenticated(true);
-        } else if (user.email === email && user.password !== password) {
+        } else {
           setStateError({
             state: true,
-            title: `This password incorrect " ${password} " !`,
-          });
-        } else if (user.email !== email && user.password === password) {
-          setStateError({
-            state: true,
-            title: `This email incorrect " ${email} " !`,
-          });
-        } else if (user.email !== email && user.password !== password) {
-          setStateError({
-            state: true,
-            title: "Email and password incorrect !",
+            title: "Email or Password Incorrect !",
           });
         }
       });
@@ -73,7 +67,7 @@ const SingIn = ({ handleSingUp }) => {
       noValidate
       onSubmit={handleSubmit}
       mt={1}
-      sx={CustomInputGlobaol.root}
+      sx={CustomTextField.root}
     >
       <CustomizedSnackbars
         SnackbarOpen={stateError}
@@ -105,6 +99,7 @@ const SingIn = ({ handleSingUp }) => {
           "input:-webkit-autofill": { caretColor: "#fff" },
         }}
       />
+
       <FormControlLabel
         control={<Checkbox value="remember" color="primary" />}
         label="Remember me"

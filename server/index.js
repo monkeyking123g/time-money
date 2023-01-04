@@ -12,6 +12,14 @@ app.use(express.json());
 app.use(express.static(__dirname + "/public"));
 app.use("/uploads", express.static("uploads"));
 
+var fileFilter = function (req, file, cb) {
+  if (!file) {
+    cb(null, false);
+    return;
+  }
+  cb(null, true);
+};
+
 // multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -22,7 +30,7 @@ const storage = multer.diskStorage({
     cb(null, Date.now() + path.extname(file.originalname));
   },
 });
-const upload = multer({ storage: storage });
+const upload = multer({ fileFilter, storage });
 app.set("view engine", "ejs");
 
 app.get("/upload", (req, res) => {
@@ -31,9 +39,12 @@ app.get("/upload", (req, res) => {
 // Login User
 app.post("/upload", upload.single("image"), (req, res) => {
   //console.log(req.file)
-  let image_url = req.file.path.replace("\\", "/");
-  // console.log(req)
-
+  let image_url;
+  if (req.file) {
+    image_url = req.file.path.replace("\\", "/");
+  } else {
+    image_url = "";
+  }
   const email = req.body.email;
   const password = req.body.password;
   const earning_hour = req.body.earning_hour;

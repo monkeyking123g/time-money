@@ -1,7 +1,7 @@
 import { Box, IconButton, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import InputBase from "@mui/material/InputBase";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useProSidebar } from "react-pro-sidebar";
@@ -13,10 +13,15 @@ import { Search } from "@mui/icons-material";
 const Topbar = ({ shadow = false }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  // const colorMode = useContext(ColorModeContext);
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const { toggleSidebar } = useProSidebar();
+  let navigate = useNavigate();
 
+  const LogoutClick = () => {
+    if (window.confirm("Are you sure to leave this page?")) {
+      return navigate("/singin");
+    } else console.log("Cancel !");
+  };
   return (
     <Box
       display={shadow ? "none" : "flex"}
@@ -59,7 +64,8 @@ const Topbar = ({ shadow = false }) => {
       {/* Icons */}
 
       <Box display="flex">
-        <IconButton component={Link} to="/singin">
+        {/* component={Link} to="/singin" */}
+        <IconButton onClick={LogoutClick}>
           <LogoutOutlinedIcon sx={{ color: "#cf6679" }} />
         </IconButton>
       </Box>

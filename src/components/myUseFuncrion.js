@@ -1,11 +1,3 @@
-// const now = new Date();
-
-// const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-// console.log(firstDay); // 👉️ Sat Oct 01 2022 ...
-
-// const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-// console.log(lastDay); // 👉️ Mon Oct 31 2022 ...
-
 export const getBusinessDatesCount = (startDate, endDate) => {
   var count = 0;
   var curDate = startDate;

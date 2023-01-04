@@ -5,13 +5,16 @@ import { tokens } from "../theme";
 import { useEffect, useState } from "react";
 import Axios from "axios";
 import { reactLocalStorage } from "reactjs-localstorage";
+import dayjs from "dayjs";
+import "dayjs/locale/it";
+
 const Data = [
   {
-    id: "2022",
+    id: `${dayjs().locale("it").year()}`,
     color: "#4cceac",
     data: [
       {
-        x: "genaio",
+        x: "gennaio",
         y: 0,
       },
       {
@@ -71,15 +74,21 @@ const LineChart = ({ isDashboard = false }) => {
   const [data, setData] = useState([]);
   useEffect(() => {
     const getTimeUser = Axios.get(
-      `http://localhost:3002/api/get/month/${userCredensial.id}`
+      `${process.env.REACT_APP_DOMAIN}/api/get/month/${userCredensial.id}`
     ).then((server) => {
-      console.log(server.data);
-
       if (server.status === 200) {
         Data[0].data.forEach((month) => {
-          let ispresent = server.data.find(
-            (get) => get.month.replace(/\d+/g, "").trim() === month.x
-          );
+          const currentYear = dayjs().locale("it").year();
+
+          let ispresent = server.data.find((get) => {
+            const yearX = +get.month.match(/\d/g).join("");
+            const monthX = get.month.replace(/\d+/g, "").trim();
+
+            return yearX === currentYear && monthX === month.x;
+          });
+          // get.month.replace(/\d+/g, "").trim() === month.x &&
+          //   get.month.match(/\d/g).join("") === currentYear
+
           if (ispresent) month.y = ispresent.total;
         });
         setData(Data);

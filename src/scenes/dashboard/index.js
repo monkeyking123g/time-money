@@ -57,10 +57,9 @@ const Dashboard = () => {
   const [rows, setRows] = useState([]);
   const [totalMonth, setTotalMonth] = useState(0);
   const [totalYear, setTotalYear] = useState(0);
-
   useEffect(() => {
     const getTimeUser = Axios.get(
-      `http://localhost:3002/api/get/time/${userCredensial.id}`
+      `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
     ).then((server) => {
       setRows(server.data);
       const currentMonth = dayjs(new Date()).locale("it").format("MM");
@@ -143,7 +142,7 @@ const Dashboard = () => {
         >
           <StateBox
             title={numberWithSep(totalMonth)}
-            subtitle="Total this Month"
+            subtitle="Sun by Month"
             process={totalMonth}
             increase={`+${percentMonth}%`}
             icon={
@@ -187,7 +186,7 @@ const Dashboard = () => {
         >
           <StateBox
             title={numberWithSep(totalYear)}
-            subtitle="Total this Year"
+            subtitle="Sum by Year"
             process={percentYear}
             increase={`+${percentYear}%`}
             icon={
@@ -209,7 +208,7 @@ const Dashboard = () => {
         >
           <StateBox
             title={userCredensial.ernin_hour}
-            subtitle="Erning Hour"
+            subtitle="Salary to Hourly"
             process={50}
             increase="+50%"
             icon={
@@ -249,8 +248,10 @@ const Dashboard = () => {
                 mt: "15px",
               }}
             >
-              ${numberWithSep(erninHourYear.toString())}
-              Revenue gerated this year.
+              $
+              {`${numberWithSep(
+                erninHourYear.toString()
+              )}  Revenue gerated this year.`}
             </Typography>
             <Typography color={"#808080"}>
               Inclides extra misc expenditures and cost
@@ -275,10 +276,10 @@ const Dashboard = () => {
             p="15px"
           >
             <Typography color={"#808080"} variant="h5" fontWeight={600}>
-              Last time created
+              Last sum by day created
             </Typography>
           </Box>
-          {rows.slice(Math.max(rows.length - 8, 1)).map((trasaction) => (
+          {rows.slice(Math.max(rows.length - 8, 0)).map((trasaction) => (
             //console.log(trasaction)
             <Box
               key={`${trasaction.ID}`}
@@ -315,8 +316,10 @@ const Dashboard = () => {
                 borderRadius="4px"
                 fontSize="16px"
                 color={colors.greenAccent[500]}
+                width="70px"
               >
-                {trasaction.total + " h."}
+                {numberWithSep(precisionRound(trasaction.total.toString(), 1)) +
+                  " h."}
               </Box>
             </Box>
           ))}
@@ -338,7 +341,7 @@ const Dashboard = () => {
             fontWeight="500"
             color={colors.greenAccent[500]}
           >
-            Months in Year
+            Months sum of the year.
           </Typography>
         </Box>
       </Box>

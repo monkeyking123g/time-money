@@ -5,11 +5,11 @@ import { createTheme } from "@mui/material/styles";
 export const tokens = (mode) => ({
   ...(mode === "dark"
     ? {
-        textColor : {
-          100 : "#ffffff",
-          200 : "fafafa",
-          300 : "#000000",
-          400:  "#ddd",
+        textColor: {
+          100: "#ffffff",
+          200: "fafafa",
+          300: "#000000",
+          400: "#ddd",
         },
         pink: {
           100: "#f1e7fe",
@@ -36,7 +36,7 @@ export const tokens = (mode) => ({
         },
         primary: {
           //100: "#121212",
-          100 : "#212121",
+          100: "#212121",
           //100 : "#2C2C2C",
           200: "#666",
           300: "#727681",
@@ -47,8 +47,8 @@ export const tokens = (mode) => ({
           800: "#080b12",
           900: "#040509",
         },
-        secondary : {
-          500 : "#2C2C2C",
+        secondary: {
+          500: "#2C2C2C",
         },
         greenAccent: {
           100: "#dbf5ee",
@@ -149,13 +149,12 @@ export const themeSettings = (mode) => {
   const colors = tokens(mode);
   return {
     palette: {
-      
       mode: mode,
       ...(mode === "dark"
         ? {
             // palette values for dark mode
-             primary: {
-                main: colors.pink[500],
+            primary: {
+              main: colors.pink[500],
             },
             // secondary: {
             //    main: colors.pink[500],
@@ -169,9 +168,8 @@ export const themeSettings = (mode) => {
               default: "#121212",
             },
             error: {
-              main: "#cf6679"
-          },
-           
+              main: "#cf6679",
+            },
           }
         : {
             // palette values for light mode
@@ -241,35 +239,3 @@ export const useMode = () => {
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   return [theme, colorMode];
 };
-
-
-// white: {
-//     100: "#ffffff",
-//     200: "#ffffff",
-//     300: "#fafafa",
-//     400: "#ffffff",
-//     500: "#ffffff",
-//     600: "#cccccc",
-//     700: "#999999",
-//     800: "#666666",
-//     900: "#333333"
-// },
-// #808080
-// pink : {
-//   100 : "#ffc5f7"
-//   200 : "#ff9ced"
-
-// }
-
-//  pink: {
-//      100: "#f1e7fe",
-//      200: "#e4cffe",
-//      300: "#d6b6fd",
-//      400: "#c99efd",
-//      500: "#bb86fc",
-//      600: "#966bca",
-//      700: "#705097",
-//      800: "#4b3665",
-//      900: "#251b32"
-//  },
-

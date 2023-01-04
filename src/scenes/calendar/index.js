@@ -47,11 +47,19 @@ const Calendar = () => {
   const handleOpen = () => {
     setOpen(true);
   };
+  const dataReset = async () => {
+    const response = await Axios.get(
+      `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
+    );
+    setData(response.data);
+  };
+
+  useEffect(() => {}, [data]);
 
   useEffect(() => {
     const GetData = async () => {
       const response = await Axios.get(
-        `http://localhost:3002/api/get/time/${userCredensial.id}`
+        `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
       );
       setData(response.data);
       const newRow = response.data.map((element) => {
@@ -67,10 +75,9 @@ const Calendar = () => {
     };
     GetData();
   }, []);
+
   useEffect(() => {
-    // Update the document title using the browser API
     if (dataAweit) {
-      // console.log("data pass ");
       const calendar = calendarApiGlobal.view.calendar;
       console.log(calendarApiGlobal.dateStr);
       calendar.unselect();
@@ -79,7 +86,6 @@ const Calendar = () => {
         title: `${time.startHour} - ${time.endHour}`,
         date: calendarApiGlobal.dateStr, // a property!
         display: "list-item",
-        //      //  end: selected.dateStr
       });
       setDataAweit(false);
       handleClosePopwindow();
@@ -103,7 +109,7 @@ const Calendar = () => {
         dateCreate: calendarApiGlobal.dateStr,
       };
       Axios.post(
-        `http://localhost:3002/api/create/time/${userCredensial.id}`,
+        `${process.env.REACT_APP_DOMAIN}/api/create/time/${userCredensial.id}`,
         values,
         {}
       )
@@ -115,8 +121,10 @@ const Calendar = () => {
         .catch((error) => {
           console.log(error);
         });
+      dataReset();
     }
-  });
+  }, [dataAweit]);
+
   const pull_data = (data) => {
     setTime(data);
     setDataAweit(true);
@@ -137,20 +145,13 @@ const Calendar = () => {
     ) {
       console.log(selected.event);
       Axios.delete(
-        `http://localhost:3002/api/delete/time/${selected.event.id}`
+        `${process.env.REACT_APP_DOMAIN}/api/delete/time/${selected.event.id}`
       );
       selected.event.remove();
     }
   };
   return (
-    <Box
-      m="20px"
-      // width="600px"
-      // sx={{
-      //   overflowX: "auto",
-      //   whiteSpace: "nowrap",
-      // }}
-    >
+    <Box m="20px">
       {open ? (
         <FormDialog clous={handleClosePopwindow} pull={pull_data} />
       ) : null}
@@ -171,7 +172,7 @@ const Calendar = () => {
         >
           <Typography variant="h5">Events</Typography>
           <List>
-            {data.slice(Math.max(data.length - 7, 1)).map((event) => (
+            {data.slice(Math.max(data.length - 7, 0)).map((event) => (
               <ListItem
                 key={event.ID}
                 sx={{

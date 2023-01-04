@@ -21,7 +21,7 @@ const initialValues = {
   companyName: "",
   startHour: "",
   endHour: "",
-  dateCreate: dayjs(new Date()).format("YYYY-MM-DD"),
+  dateCreate: dayjs(new Date()).locale("it").format("YYYY-MM-DD"),
 };
 const userSchema = yup.object().shape({
   companyName: yup.string(),
@@ -80,7 +80,7 @@ const Form = () => {
     });
     console.log(newValuse);
     Axios.post(
-      `http://localhost:3002/api/create/time/${userCredensial.id}`,
+      `${process.env.REACT_APP_DOMAIN}/api/create/time/${userCredensial.id}`,
       newValuse,
       {}
     ).then((res) => {
@@ -95,7 +95,7 @@ const Form = () => {
         companyName: "",
         startHour: "",
         endHour: "",
-        dateCreate: dayjs(new Date()).format("YYYY-MM-DD"),
+        dateCreate: dayjs(new Date()).locale("it").format("YYYY-MM-DD"),
       },
     });
   };

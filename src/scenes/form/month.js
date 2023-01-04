@@ -20,8 +20,8 @@ import { useStyledTextField, useStyledButton } from "../../styleComponent";
 
 const initialValues = {
   hoursDone: "",
-  dateCreate: dayjs(new Date()).format("YYYY-MM-DD"),
-  month: dayjs(new Date()).format("MMMM YYYY"),
+  dateCreate: dayjs(new Date()).locale("it").format("YYYY-MM-DD"),
+  month: dayjs(new Date()).locale("it").format("MMMM YYYY"),
 };
 // const validaNumber = /^[0-9]+$/;
 const userSchema = yup.object().shape({
@@ -59,7 +59,7 @@ const FormMonth = () => {
 
   const handleFormSubmit = (values, actions) => {
     Axios.post(
-      `http://localhost:3002/api/create/month/${userCredensial.id}`,
+      `${process.env.REACT_APP_DOMAIN}/api/create/month/${userCredensial.id}`,
       values,
       {}
     )
@@ -87,7 +87,7 @@ const FormMonth = () => {
     actions.resetForm({
       values: {
         hoursDone: "",
-        dateCreate: dayjs(new Date()).format("YYYY-MM-DD"),
+        dateCreate: dayjs(new Date()).locale("it").format("YYYY-MM-DD"),
         month: "",
       },
     });

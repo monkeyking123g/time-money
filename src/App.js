@@ -42,7 +42,7 @@ function App() {
 
   React.useEffect(() => {
     if (location.pathname === "/singin") {
-      return setShadows(true);
+      setShadows(true);
     } else setShadows(false);
   }, [location]);
 
