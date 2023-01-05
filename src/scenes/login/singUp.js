@@ -3,12 +3,15 @@ import { Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import InputAdornment from "@mui/material/InputAdornment";
 import EuroOutlinedIcon from "@mui/icons-material/EuroOutlined";
+import { useState, useEffect } from "react";
 import * as yup from "yup";
 import Axios from "axios";
 import Grid from "@mui/material/Grid";
 import { tokens } from "../../theme";
 import { useStyledTextField } from "../../styleComponent";
 import { reactLocalStorage } from "reactjs-localstorage";
+import CircularIndeterminate from "../../components/Circular";
+import CustomizedSnackbars from "../../components/Alert";
 
 const initialValues = {
   email: "",
@@ -16,9 +19,9 @@ const initialValues = {
   passwordConfirmation: "",
   earningHour: "",
 };
-const validaNumber = /^[0-9]+$/;
+
 const userSchema = yup.object().shape({
-  email: yup.string().email(),
+  email: yup.string().email().required(),
   password: yup
     .string()
     .required("No password provided.")
@@ -29,10 +32,7 @@ const userSchema = yup.object().shape({
     .required("No password provided.")
     .min(4, "Password is too short - should be 4 chars minimum.")
     .oneOf([yup.ref("password"), null], "Passwords must match"),
-  earningHour: yup
-    .string()
-    .matches(validaNumber, "This is not number")
-    .required("required"),
+  earningHour: yup.number().required("required"),
 });
 
 const SingUn = ({ handleSingIn, imageUser }) => {
@@ -40,10 +40,21 @@ const SingUn = ({ handleSingIn, imageUser }) => {
   const colors = tokens(theme.palette.mode);
   let navigate = useNavigate();
 
+  const [loading, setLoading] = useState(false);
+  const [authenticated, isAuthenticated] = useState(false);
+  const [stateError, setStateError] = useState({ state: false, title: "" });
+
   const CustomTextField = useStyledTextField({
     color: colors.greenAccent[500],
     globalColor: colors.grey[800],
   });
+  useEffect(() => {
+    if (authenticated) {
+      console.log("User is authentificated");
+      setLoading(false);
+      return navigate("/");
+    }
+  }, [authenticated]);
 
   const handleFormSubmit = (values) => {
     const formData = new FormData();
@@ -51,46 +62,54 @@ const SingUn = ({ handleSingIn, imageUser }) => {
     formData.append("email", values.email);
     formData.append("password", values.password);
     formData.append("earning_hour", values.earningHour);
-    // Axios.post("http://localhost:3002/upload", formData, {}).then((res) => {
-    //   console.log(res);
-    //   if (res.status === 200) {
+    setLoading(true);
+    function getUserAccount() {
+      return Axios.post(`${process.env.REACT_APP_DOMAIN}/upload`, formData, {});
+    }
 
-    //   }
-    // });
-    const postGet = async () => {
-      const post = await Axios.post(
-        `${process.env.REACT_APP_DOMAIN}/upload`,
-        formData,
-        {}
-      ).then((res) => {
-        console.log(res);
-        if (res.status === 200) {
+    function getUserPermissions() {
+      return Axios.get(`${process.env.REACT_APP_DOMAIN}/api/get/user`);
+    }
+
+    Promise.all([getUserAccount(), getUserPermissions()])
+      .then(function (results) {
+        const acct = results[0];
+        const perm = results[1];
+        if (acct.status == 200) {
+          perm.data.forEach((user) => {
+            if (
+              user.email === values.email &&
+              user.password === values.password
+            ) {
+              console.log("User faund !");
+              const dataUser = {
+                id: user.ID,
+                email: user.email,
+                password: user.password,
+                image: user.image_url,
+                ernin_hour: user.earning_hour,
+              };
+              reactLocalStorage.setObject("user", dataUser);
+              isAuthenticated(true);
+            }
+          });
+        } else console.log("problem");
+      })
+      .catch(function (error) {
+        if (error.response) {
+          console.log(error.response.status);
+          setStateError({
+            state: true,
+            title: "Server error sorry  !",
+          });
+          setLoading(false);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+          setLoading(false);
         }
       });
-      const get = await Axios.get(
-        `${process.env.REACT_APP_DOMAIN}/api/get/user`
-      ).then((data) => {
-        data.data.forEach((user) => {
-          if (
-            user.email === values.email &&
-            user.password === values.password
-          ) {
-            console.log("User faund !");
-            const dataUser = {
-              id: user.ID,
-              email: user.email,
-              password: user.password,
-              image: user.image_url,
-              ernin_hour: user.earning_hour,
-            };
-            reactLocalStorage.setObject("user", dataUser);
-          }
-        });
-      });
-
-      return navigate("/");
-    };
-    postGet();
   };
 
   return (
@@ -108,8 +127,18 @@ const SingUn = ({ handleSingIn, imageUser }) => {
         handleSubmit,
       }) => (
         //enctype="multipart/form-data"
-        <form onSubmit={handleSubmit}>
+        <Box component="form" onSubmit={handleSubmit} noValidate>
           <Box mt={1} sx={CustomTextField.root}>
+            <CustomizedSnackbars
+              SnackbarOpen={stateError}
+              setSnackbarOpen={setStateError}
+              severity="error"
+            />
+            {loading ? (
+              <CircularIndeterminate />
+            ) : (
+              <Box display="flex" p="20px" />
+            )}
             <TextField
               // borderColor={colors.greenAccent[500]}
               margin="normal"
@@ -162,7 +191,7 @@ const SingUn = ({ handleSingIn, imageUser }) => {
               margin="normal"
               required
               fullWidth
-              type="text"
+              type="number"
               onBlur={handleBlur}
               onChange={handleChange}
               value={values.earningHour}
@@ -207,7 +236,7 @@ const SingUn = ({ handleSingIn, imageUser }) => {
               </Grid>
             </Grid>
           </Box>
-        </form>
+        </Box>
       )}
     </Formik>
   );

@@ -8,6 +8,7 @@ import { reactLocalStorage } from "reactjs-localstorage";
 import { DataGrid } from "@mui/x-data-grid";
 // Style component
 import { useStyleDataGrid } from "../../styleComponent";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Team = () => {
   const theme = useTheme();
@@ -15,6 +16,7 @@ const Team = () => {
   const [userCredensial, setUserCredensial] = useState(
     reactLocalStorage.getObject("user")
   );
+  const isNonMobile = useMediaQuery("(min-width:600px)");
   const CastomeStyleDataGrid = useStyleDataGrid({
     primary: colors.pink[500],
     green: colors.greenAccent[500],
@@ -83,7 +85,11 @@ const Team = () => {
   return (
     <Box m="20px">
       <Header title="Admin" subtitle="Menaging the Admin. " />
-      <Box m="40px 0 0 0" height="75vh" sx={CastomeStyleDataGrid.root}>
+      <Box
+        m={isNonMobile ? "40px 0 0 0" : "0"}
+        height="75vh"
+        sx={CastomeStyleDataGrid.root}
+      >
         <DataGrid
           disableColumnSelector
           rows={rows}

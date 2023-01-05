@@ -151,7 +151,7 @@ const Calendar = () => {
     }
   };
   return (
-    <Box m="20px">
+    <Box m={isNonMobile ? "20px" : "15px"}>
       {open ? (
         <FormDialog clous={handleClosePopwindow} pull={pull_data} />
       ) : null}

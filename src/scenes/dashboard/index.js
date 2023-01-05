@@ -1,7 +1,7 @@
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme, Button } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
-// import { rows } from "../time";
+import CircularIndeterminate from "../../components/Circular";
 import { useEffect, useState } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 // Icons
@@ -50,6 +50,7 @@ const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [loading, setLoading] = useState(false);
 
   const [userCredensial, setUserCredensial] = useState(
     reactLocalStorage.getObject("user")
@@ -57,42 +58,58 @@ const Dashboard = () => {
   const [rows, setRows] = useState([]);
   const [totalMonth, setTotalMonth] = useState(0);
   const [totalYear, setTotalYear] = useState(0);
+
   useEffect(() => {
+    setLoading(false);
+  }, [rows]);
+
+  useEffect(() => {
+    setLoading(true);
     const getTimeUser = Axios.get(
       `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
-    ).then((server) => {
-      setRows(server.data);
-      const currentMonth = dayjs(new Date()).locale("it").format("MM");
-      const currentYear = dayjs(new Date()).locale("it").format("YYYY");
+    )
+      .then((server) => {
+        setRows(server.data);
+        const currentMonth = dayjs(new Date()).locale("it").format("MM");
+        const currentYear = dayjs(new Date()).locale("it").format("YYYY");
 
-      const eventsMonth = server.data.filter((e) => {
-        const dataFromUser = dayjs(e.dateCreated)
-          .locale("it")
-          .format("YYYY-MM-DD");
-        var [year, month] = dataFromUser.split("-"); // Or, var month = e.date.split('-')[1];
+        const eventsMonth = server.data.filter((e) => {
+          const dataFromUser = dayjs(e.dateCreated)
+            .locale("it")
+            .format("YYYY-MM-DD");
+          var [year, month] = dataFromUser.split("-"); // Or, var month = e.date.split('-')[1];
 
-        return +currentMonth === +month && currentYear == year;
-      });
-      //console.log(eventsMonth);
-      let calcolatetotalMonth = 0;
-      eventsMonth.forEach((element) => {
-        calcolatetotalMonth += element.total;
-      });
-      setTotalMonth(precisionRound(calcolatetotalMonth, 2));
-      const eventsYear = server.data.filter((e) => {
-        const dataFromUser = dayjs(e.dateCreated)
-          .locale("it")
-          .format("YYYY-MM-DD");
+          return +currentMonth === +month && currentYear == year;
+        });
+        //console.log(eventsMonth);
+        let calcolatetotalMonth = 0;
+        eventsMonth.forEach((element) => {
+          calcolatetotalMonth += element.total;
+        });
+        setTotalMonth(precisionRound(calcolatetotalMonth, 2));
+        const eventsYear = server.data.filter((e) => {
+          const dataFromUser = dayjs(e.dateCreated)
+            .locale("it")
+            .format("YYYY-MM-DD");
 
-        var [year] = dataFromUser.split("-"); // Or, var month = e.date.split('-')[1];
-        return currentYear == year;
+          var [year] = dataFromUser.split("-"); // Or, var month = e.date.split('-')[1];
+          return currentYear == year;
+        });
+        let calcolatetotalYear = 0;
+        eventsYear.forEach((element) => {
+          calcolatetotalYear += element.total;
+        });
+        setTotalYear(precisionRound(calcolatetotalYear, 2));
+      })
+      .catch(function (error) {
+        if (error.response) {
+          console.log(error.response.status);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
       });
-      let calcolatetotalYear = 0;
-      eventsYear.forEach((element) => {
-        calcolatetotalYear += element.total;
-      });
-      setTotalYear(precisionRound(calcolatetotalYear, 2));
-    });
   }, []);
 
   //  Calcolate data from Dashboard
@@ -123,7 +140,9 @@ const Dashboard = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="DASHBOARD" subtitle="Welcom to your dashboard." />
+        {loading ? <CircularIndeterminate /> : <Box display="flex" p="20px" />}
       </Box>
+
       <Box
         display="grid"
         gridTemplateColumns="repeat(12, 1fr)"

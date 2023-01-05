@@ -12,6 +12,7 @@ import { Box, useTheme, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import { useStyleDataGrid } from "../styleComponent";
 import { tokens } from "../theme";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const CustomDataGrid = ({
   rows,
@@ -27,6 +28,7 @@ const CustomDataGrid = ({
     green: colors.greenAccent[500],
     background: colors.primary[100],
   });
+  const isNonMobile = useMediaQuery("(min-width:600px)");
   // const [selectionModel, setSelectionModel] = React.useState([]);
 
   function CustomToolbar() {
@@ -43,7 +45,11 @@ const CustomDataGrid = ({
     );
   }
   return (
-    <Box m="40px 0 0 0" height="75vh" sx={CastomeStyleDataGrid.root}>
+    <Box
+      m={isNonMobile ? "40px 0 0 0" : "0"}
+      height="75vh"
+      sx={CastomeStyleDataGrid.root}
+    >
       <DataGrid
         rows={rows}
         columns={columns}

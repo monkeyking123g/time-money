@@ -1,9 +1,8 @@
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
-// import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import dayjs from "dayjs";
-
+import CircularIndeterminate from "../../components/Circular";
 import CustomDataGrid from "../../components/DataGrid";
 import Axios from "axios";
 import { reactLocalStorage } from "reactjs-localstorage";
@@ -67,8 +66,14 @@ const ListTime = () => {
   );
   const [rows, setRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(false);
+  }, [rows]);
+
+  useEffect(() => {
+    setLoading(true);
     const newData = [];
     const getTimeUser = Axios.get(
       `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
@@ -114,7 +119,11 @@ const ListTime = () => {
   };
   return (
     <Box m="20px">
-      <Header title="All Time" subtitle="List by Time Created" />
+      <Box display="flex" justifyContent="space-between">
+        <Header title="All Time" subtitle="List by Time Created" />
+        {loading ? <CircularIndeterminate /> : <Box display="flex" p="20px" />}
+      </Box>
+
       <CustomDataGrid
         rows={rows}
         columns={colums}

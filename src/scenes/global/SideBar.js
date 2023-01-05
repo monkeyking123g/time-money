@@ -141,7 +141,7 @@ const SideBar = ({ shadow = false, credential }) => {
           )}
 
           {!isCollapsed && (
-            <Box mb="25px">
+            <Box mb={isNonMobile ? "25px" : "1px"}>
               <Box display="flex" justifyContent="center" alignItems="center">
                 <img
                   alt="profile-user"
@@ -168,7 +168,7 @@ const SideBar = ({ shadow = false, credential }) => {
                 >
                   {userCredensial.email}
                 </Typography>
-                <Typography variant="h5" color={colors.primary[500]}>
+                <Typography variant="h5" color="#9A7D31">
                   VP Chef
                 </Typography>
               </Box>

@@ -84,6 +84,7 @@ export default function SignInSide() {
               <IconButton
                 sx={{ color: colors.primary[100] }}
                 variant="contained"
+                type="submit"
                 component="label"
               >
                 <img

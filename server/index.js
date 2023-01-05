@@ -38,13 +38,13 @@ app.get("/upload", (req, res) => {
 });
 // Login User
 app.post("/upload", upload.single("image"), (req, res) => {
-  //console.log(req.file)
   let image_url;
   if (req.file) {
     image_url = req.file.path.replace("\\", "/");
   } else {
     image_url = "";
   }
+
   const email = req.body.email;
   const password = req.body.password;
   const earning_hour = req.body.earning_hour;
