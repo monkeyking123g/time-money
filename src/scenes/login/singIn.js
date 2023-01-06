@@ -18,7 +18,7 @@ const SingIn = ({ handleSingUp }) => {
   const [loading, setLoading] = useState(false);
   const [authenticated, isAuthenticated] = useState(false);
   const [stateError, setStateError] = useState({ state: false, title: "" });
-  // const CustomInputGlobaol = useStyleInputGlobal({ color: colors.grey[800] });
+
   const CustomTextField = useStyledTextField({
     color: colors.pink[500],
     globalColor: colors.grey[800],
@@ -37,51 +37,51 @@ const SingIn = ({ handleSingUp }) => {
     setLoading(true); // loading data
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
-    const email = data.get("email");
-    const password = data.get("password");
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email");
+    const password = formData.get("password");
 
-    const login = async () => {
-      const get = await Axios.get(
-        `${process.env.REACT_APP_DOMAIN}/api/get/user`
-      )
-        .then((data) => {
-          data.data.forEach((user) => {
-            if (user.email === email && user.password === password) {
-              const dataUser = {
-                id: user.ID,
-                email: user.email,
-                password: user.password,
-                image: user.image_url,
-                ernin_hour: user.earning_hour,
-              };
-              reactLocalStorage.setObject("user", dataUser);
-              isAuthenticated(true);
-            } else {
-              // setLoading(false);
-              setStateError({
-                state: true,
-                title: "Email or Password Incorrect !",
-              });
-            }
+    Axios.get(`${process.env.REACT_APP_DOMAIN}/api/get/user`)
+      .then((user) => {
+        const currentUser = user.data.find(
+          (currUserResponse) =>
+            currUserResponse.email === email &&
+            currUserResponse.password === password
+        );
+
+        if (currentUser) {
+          console.log("User faund !");
+          reactLocalStorage.setObject("user", {
+            id: currentUser.ID,
+            email: currentUser.email,
+            password: currentUser.password,
+            image: currentUser.image_url,
+            ernin_hour: currentUser.earning_hour,
           });
-        })
-        .catch(function (error) {
-          if (error.response) {
-            console.log(error.response.status);
-            setStateError({
-              state: true,
-              title: "Server error sorry !",
-            });
-          } else if (error.request) {
-            console.log(error.request);
-          } else {
-            console.log("Error", error.message);
-          }
-        });
-      setLoading(false);
-    };
-    login();
+          isAuthenticated(true);
+        } else {
+          setStateError({
+            state: true,
+            title: "Email or Password Incorrect !",
+          });
+        }
+      })
+      .catch(function (error) {
+        if (error.response) {
+          console.log(error.response.status);
+          setStateError({
+            state: true,
+            title: "Server error sorry !",
+          });
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+      })
+      .finally((_result) => {
+        setLoading(false);
+      });
   };
 
   return (

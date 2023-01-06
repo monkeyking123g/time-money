@@ -1,10 +1,11 @@
-import * as React from "react";
+import { useState } from "react";
 import { Box, Button, useTheme, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
-import dayjs from "dayjs";
 
+import dayjs from "dayjs";
 import "dayjs/locale/it";
+
 import Header from "../../components/Header";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { tokens } from "../../theme";
@@ -14,6 +15,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import Axios from "axios";
 import { reactLocalStorage } from "reactjs-localstorage";
 import CustomizedSnackbars from "../../components/Alert";
+import CircularIndeterminate from "../../components/Circular";
 
 // my style
 import { useStyledTextField, useStyledButton } from "../../styleComponent";
@@ -34,18 +36,17 @@ const FormMonth = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [loading, setLoading] = useState(false);
   // date piker UseState
-  const [monthValue, setMonthValue] = React.useState(dayjs(new Date()));
-  const [createValue, setCreateValue] = React.useState(dayjs(new Date()));
-  const [userCredensial, setUserCredensial] = React.useState(
+  const [monthValue, setMonthValue] = useState(dayjs(new Date()));
+  const [createValue, setCreateValue] = useState(dayjs(new Date()));
+  const [userCredensial, setUserCredensial] = useState(
     reactLocalStorage.getObject("user")
   );
-  const [severity, setSeverity] = React.useState(true);
-  const [stateSuccessfully, setStateSuccessfully] = React.useState({
+  const [stateSuccessfully, setStateSuccessfully] = useState({
     state: false,
     title: "",
   });
-  React.useEffect(() => {}, [severity]);
 
   const CustomTextField = useStyledTextField({
     color: colors.pink[500],
@@ -58,6 +59,7 @@ const FormMonth = () => {
   // const CustomInputGlobaol = useStyleInputGlobal({ color: colors.grey[800] });
 
   const handleFormSubmit = (values, actions) => {
+    setLoading(true);
     Axios.post(
       `${process.env.REACT_APP_DOMAIN}/api/create/month/${userCredensial.id}`,
       values,
@@ -65,56 +67,49 @@ const FormMonth = () => {
     )
       .then((res) => {
         if (res.status === 200) {
-          setSeverity(true);
           setStateSuccessfully({
             state: true,
             title: "Successfully Created.",
           });
         }
       })
-      .catch((error) => {
-        if (error.response.status === 400) {
-          setSeverity(false);
-          setStateSuccessfully({
-            state: true,
-            title: "Server problem !",
-          });
+      .catch(function (error) {
+        if (error.response) {
+          console.log(error.response.status);
+        } else if (error.request) {
+          console.log(error.request);
         } else {
-          console.log(error);
+          console.log("Error", error.message);
         }
+      })
+      .finally(function () {
+        actions.setSubmitting(false);
+        actions.resetForm({
+          values: {
+            hoursDone: "",
+            dateCreate: dayjs(new Date()).locale("it").format("YYYY-MM-DD"),
+            month: "",
+          },
+        });
+        setMonthValue(null);
+        setLoading(false);
       });
-    actions.setSubmitting(false);
-    actions.resetForm({
-      values: {
-        hoursDone: "",
-        dateCreate: dayjs(new Date()).locale("it").format("YYYY-MM-DD"),
-        month: "",
-      },
-    });
-
-    setMonthValue(null);
   };
   return (
     <Box m="20px">
-      {severity ? (
-        <CustomizedSnackbars
-          SnackbarOpen={stateSuccessfully}
-          setSnackbarOpen={setStateSuccessfully}
-          severity="success"
+      <CustomizedSnackbars
+        SnackbarOpen={stateSuccessfully}
+        setSnackbarOpen={setStateSuccessfully}
+        severity="success"
+      />
+      <Box display="flex" justifyContent="space-between" mb="15px">
+        <Header
+          title="Sum by Month"
+          TitleColor={colors.pink[500]}
+          subtitle="Created a New Sum by Month"
         />
-      ) : (
-        <CustomizedSnackbars
-          SnackbarOpen={stateSuccessfully}
-          setSnackbarOpen={setStateSuccessfully}
-          severity="error"
-        />
-      )}
-
-      <Header
-        title="Sum by Month"
-        TitleColor={colors.pink[500]}
-        subtitle="Created a New Sum by Month"
-      ></Header>
+        {loading ? <CircularIndeterminate /> : <Box display="flex" p="20px" />}
+      </Box>
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}

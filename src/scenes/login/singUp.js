@@ -36,81 +36,77 @@ const userSchema = yup.object().shape({
 });
 
 const SingUn = ({ handleSingIn, imageUser }) => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  let navigate = useNavigate();
-
   const [loading, setLoading] = useState(false);
   const [authenticated, isAuthenticated] = useState(false);
   const [stateError, setStateError] = useState({ state: false, title: "" });
 
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const navigate = useNavigate();
   const CustomTextField = useStyledTextField({
     color: colors.greenAccent[500],
     globalColor: colors.grey[800],
   });
+
+  const handleFormSubmit = async (values) => {
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("image", imageUser);
+      formData.append("email", values.email);
+      formData.append("password", values.password);
+      formData.append("earning_hour", values.earningHour);
+
+      await Axios.post(`${process.env.REACT_APP_DOMAIN}/upload`, formData, {});
+
+      const currentUserResponse = await Axios.get(
+        `${process.env.REACT_APP_DOMAIN}/api/get/user`
+      );
+
+      const currentUser = currentUserResponse.data.find(
+        (currUserResponse) =>
+          currUserResponse.email === values.email &&
+          currUserResponse.password === values.password
+      );
+
+      if (currentUser) {
+        console.log("User faund !");
+        reactLocalStorage.setObject("user", {
+          id: currentUser.ID,
+          email: currentUser.email,
+          password: currentUser.password,
+          image: currentUser.image_url,
+          ernin_hour: currentUser.earning_hour,
+        });
+        isAuthenticated(true);
+      }
+    } catch (error) {
+      console.error("Error in Submit form. Message: ", error);
+
+      if (error.response) {
+        console.log(error.response.status);
+        setStateError({
+          state: true,
+          title: "Server error sorry  !",
+        });
+      } else if (error.request) {
+        console.log(error.request);
+      } else {
+        console.log("Error", error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (authenticated) {
       console.log("User is authentificated");
-      setLoading(false);
+
       return navigate("/");
     }
   }, [authenticated]);
-
-  const handleFormSubmit = (values) => {
-    const formData = new FormData();
-    formData.append("image", imageUser);
-    formData.append("email", values.email);
-    formData.append("password", values.password);
-    formData.append("earning_hour", values.earningHour);
-    setLoading(true);
-    function getUserAccount() {
-      return Axios.post(`${process.env.REACT_APP_DOMAIN}/upload`, formData, {});
-    }
-
-    function getUserPermissions() {
-      return Axios.get(`${process.env.REACT_APP_DOMAIN}/api/get/user`);
-    }
-
-    Promise.all([getUserAccount(), getUserPermissions()])
-      .then(function (results) {
-        const acct = results[0];
-        const perm = results[1];
-        if (acct.status == 200) {
-          perm.data.forEach((user) => {
-            if (
-              user.email === values.email &&
-              user.password === values.password
-            ) {
-              console.log("User faund !");
-              const dataUser = {
-                id: user.ID,
-                email: user.email,
-                password: user.password,
-                image: user.image_url,
-                ernin_hour: user.earning_hour,
-              };
-              reactLocalStorage.setObject("user", dataUser);
-              isAuthenticated(true);
-            }
-          });
-        } else console.log("problem");
-      })
-      .catch(function (error) {
-        if (error.response) {
-          console.log(error.response.status);
-          setStateError({
-            state: true,
-            title: "Server error sorry  !",
-          });
-          setLoading(false);
-        } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log("Error", error.message);
-          setLoading(false);
-        }
-      });
-  };
 
   return (
     <Formik

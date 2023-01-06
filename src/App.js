@@ -28,9 +28,8 @@ function App() {
   const [isSidebar, setIsSidebar] = useState(true);
   const [shadows, setShadows] = useState(false);
 
-  const [userCredensial, setUserCredensial] = useState(
-    reactLocalStorage.getObject("user")
-  );
+  const userCredensial = reactLocalStorage.getObject("user");
+
   let navigate = useNavigate();
   let location = useLocation();
 
@@ -69,7 +68,6 @@ function App() {
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/line" element={<Line />} />
                 <Route replace path="/singin" element={<SingIn />} />
-                <Route />
               </Routes>
             </div>
           </div>

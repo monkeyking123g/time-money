@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 import { Button, Dialog, useTheme, Typography, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -7,7 +7,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { useStyledTextField, useStyledButton } from "../styleComponent";
+import { useStyledTextField } from "../styleComponent";
 import { tokens } from "../theme";
 
 const initialValues = {
@@ -20,14 +20,10 @@ const userSchema = yup.object().shape({
   endHour: yup.string(),
 });
 
-export default function FormDialog({ clous, pull }) {
+const FormDialog = ({ clous, pull }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const CustomButton = useStyledButton({
-    color: colors.greenAccent[600],
-    hoverColor: colors.greenAccent[500],
-  });
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = useState(true);
   const CustomTextField = useStyledTextField({
     color: colors.greenAccent[500],
     globalColor: colors.grey[800],
@@ -63,7 +59,6 @@ export default function FormDialog({ clous, pull }) {
             handleBlur,
             handleChange,
             handleSubmit,
-            setFieldValue,
           }) => (
             <form onSubmit={handleSubmit}>
               <DialogContent
@@ -152,4 +147,6 @@ export default function FormDialog({ clous, pull }) {
       </Dialog>
     </div>
   );
-}
+};
+
+export default FormDialog;

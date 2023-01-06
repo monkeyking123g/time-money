@@ -1,10 +1,10 @@
 import { ResponsiveLine } from "@nivo/line";
-// import { montData as data } from "../data/testDate";
 import { useTheme } from "@mui/material";
 import { tokens } from "../theme";
 import { useEffect, useState } from "react";
 import Axios from "axios";
 import { reactLocalStorage } from "reactjs-localstorage";
+
 import dayjs from "dayjs";
 import "dayjs/locale/it";
 
@@ -68,32 +68,45 @@ const Data = [
 const LineChart = ({ isDashboard = false }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [userCredensial, setUserCredensial] = useState(
-    reactLocalStorage.getObject("user")
-  );
+  const userCredensial = reactLocalStorage.getObject("user");
+
   const [data, setData] = useState([]);
   useEffect(() => {
-    const getTimeUser = Axios.get(
+    // setloading(true);
+    Axios.get(
       `${process.env.REACT_APP_DOMAIN}/api/get/month/${userCredensial.id}`
-    ).then((server) => {
-      if (server.status === 200) {
-        Data[0].data.forEach((month) => {
-          const currentYear = dayjs().locale("it").year();
+    )
+      .then((server) => {
+        if (server.status === 200) {
+          Data[0].data.forEach((month) => {
+            const currentYear = dayjs().locale("it").year();
 
-          let ispresent = server.data.find((get) => {
-            const yearX = +get.month.match(/\d/g).join("");
-            const monthX = get.month.replace(/\d+/g, "").trim();
+            let ispresent = server.data.find((get) => {
+              const yearX = +get.month.match(/\d/g).join("");
+              const monthX = get.month.replace(/\d+/g, "").trim();
 
-            return yearX === currentYear && monthX === month.x;
+              return yearX === currentYear && monthX === month.x;
+            });
+            // get.month.replace(/\d+/g, "").trim() === month.x &&
+            //   get.month.match(/\d/g).join("") === currentYear
+
+            if (ispresent) month.y = ispresent.total;
           });
-          // get.month.replace(/\d+/g, "").trim() === month.x &&
-          //   get.month.match(/\d/g).join("") === currentYear
-
-          if (ispresent) month.y = ispresent.total;
-        });
-        setData(Data);
-      }
-    });
+          setData(Data);
+        }
+      })
+      .catch(function (error) {
+        if (error.response) {
+          console.log(error.response.status);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+      })
+      .finally(function () {
+        // setloading(false);
+      });
   }, []);
   return (
     <ResponsiveLine

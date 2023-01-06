@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState } from "react";
 // Componets
 import SingIn from "./singIn";
 import SingUn from "./singUp";
@@ -18,14 +18,14 @@ import Typography from "@mui/material/Typography";
 import { ThemeProvider } from "@mui/material/styles";
 import { tokens } from "../../theme";
 
-export default function SignInSide() {
+const SignInSide = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [clickSingUp, setClickSingUp] = React.useState(false);
-  const [selectedFile, setSelectedFile] = React.useState();
-  const [fileChange, setFileChange] = React.useState();
-  //shadowBar()
+  const [clickSingUp, setClickSingUp] = useState(false);
+  const [selectedFile, setSelectedFile] = useState();
+  const [fileChange, setFileChange] = useState();
+
   const handleSubmit = () => {
     setClickSingUp(!clickSingUp);
   };
@@ -46,9 +46,6 @@ export default function SignInSide() {
     };
     fileReader.readAsDataURL(file);
   };
-  // React.useEffect(() => {
-  //   uploadImage(logo);
-  // }, []);
 
   return (
     <ThemeProvider theme={theme}>
@@ -126,4 +123,5 @@ export default function SignInSide() {
       </Grid>
     </ThemeProvider>
   );
-}
+};
+export default SignInSide;

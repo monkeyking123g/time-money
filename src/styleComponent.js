@@ -62,30 +62,8 @@ export const useStyledButton = ({ color, hoverColor }) => ({
   },
 });
 
-// export const useStyleInputGlobal = ({ color }) => ({
-//   root: {
-//     "input:-webkit-autofill": {
-//       "-webkit-box-shadow": `0 0 0 30px ${color} inset !important`,
-//       "-webkit-text-fill-color": "#fff",
-//       "caret-color": "#141414",
-//     },
-//     "input:-webkit-autofill:hover": {
-//       "-webkit-box-shadow": `0 0 0 30px ${color} inset !important`,
-//     },
-//     "input:-webkit-autofill:focus": {
-//       "-webkit-box-shadow": `0 0 0 30px ${color} inset !important`,
-//     },
-//     "input:-webkit-autofill:active": {
-//       "-webkit-box-shadow": `0 0 0 30px ${color} inset !important`,
-//     },
-//   },
-// });
-
 export const useStyleDataGrid = ({ primary, green, background }) => ({
   root: {
-    // "& .MuiSvgIcon-root" : {
-    //   color : "black"
-    // },
     "& .MuiDataGrid-row:hover": {
       backgroundColor: "#2c2c2c",
     },
@@ -156,7 +134,3 @@ export const useStyleDataGrid = ({ primary, green, background }) => ({
     },
   },
 });
-//"input:-webkit-autofill" : {"-webkit-box-shadow": "0 0 0 30px black inset !important"},
-//"input:-webkit-autofill:hover": {"-webkit-box-shadow": "0 0 0 30px black inset !important"},
-//"input:-webkit-autofill:focus" : {"-webkit-box-shadow": "0 0 0 30px black inset !important"},
-//"input:-webkit-autofill:active" : {"-webkit-box-shadow": "0 0 0 30px black inset !important"},

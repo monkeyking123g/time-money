@@ -5,6 +5,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 const Line = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+
   return (
     <Box
       m="20px"
@@ -18,7 +19,9 @@ const Line = () => {
             }
       }
     >
-      <Header title="Line Chart" subtitle="Simple Line Chart" />
+      <Box display="flex" justifyContent="space-between">
+        <Header title="Line Chart" subtitle="Simple Line Chart" />
+      </Box>
       <Box
         height={isNonMobile ? "75vh" : "74vh"}
         width={isNonMobile ? "100%" : "1000px"}

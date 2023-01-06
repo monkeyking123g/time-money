@@ -1,5 +1,3 @@
-import React from "react";
-import { useState } from "react";
 import { Box, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { AdminPanelSettingsOutlined } from "@mui/icons-material";
@@ -13,9 +11,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 const Team = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [userCredensial, setUserCredensial] = useState(
-    reactLocalStorage.getObject("user")
-  );
+  const userCredensial = reactLocalStorage.getObject("user");
+
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const CastomeStyleDataGrid = useStyleDataGrid({
     primary: colors.pink[500],

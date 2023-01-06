@@ -59,44 +59,50 @@ const colums = [
 ];
 
 const ListTime = () => {
-  // const theme = useTheme();
-  // const colors = tokens(theme.palette.mode);
-  const [userCredensial, setUserCredensial] = useState(
-    reactLocalStorage.getObject("user")
-  );
+  const userCredensial = reactLocalStorage.getObject("user");
+
   const [rows, setRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(false);
-  }, [rows]);
-
-  useEffect(() => {
     setLoading(true);
     const newData = [];
-    const getTimeUser = Axios.get(
+    Axios.get(
       `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
-    ).then((server) => {
-      if (server.status === 200) {
-        let nam = 1;
-        server.data.map((el) => {
-          const updateData = {
-            id: el.ID,
-            nam: nam,
-            company: el.company,
-            start: el.start.slice(0, 5),
-            end: el.end.slice(0, 5),
-            total: el.total,
-            dateCreated: dayjs(el.dateCreated).format("DD-MM-YYYY"),
-          };
-          newData.push(updateData);
-          nam += 1;
-        });
-      }
-      //  setRowsData(rowsData => [...rowsData, newdata])
-      setRows(newData);
-    });
+    )
+      .then((server) => {
+        if (server.status === 200) {
+          let nam = 1;
+          server.data.map((el) => {
+            const updateData = {
+              id: el.ID,
+              nam: nam,
+              company: el.company,
+              start: el.start.slice(0, 5),
+              end: el.end.slice(0, 5),
+              total: el.total,
+              dateCreated: dayjs(el.dateCreated).format("DD-MM-YYYY"),
+            };
+            newData.push(updateData);
+            nam += 1;
+          });
+        }
+        //  setRowsData(rowsData => [...rowsData, newdata])
+        setRows(newData);
+      })
+      .catch(function (error) {
+        if (error.response) {
+          console.log(error.response.status);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+      })
+      .finally(function () {
+        setLoading(false);
+      });
   }, []);
   const handleSelectionChange = (selection) => {
     setSelectedRows(selection);

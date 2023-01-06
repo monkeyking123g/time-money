@@ -1,4 +1,4 @@
-import { Box, Typography, useTheme, Button } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
 import CircularIndeterminate from "../../components/Circular";
@@ -52,20 +52,15 @@ const Dashboard = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [loading, setLoading] = useState(false);
 
-  const [userCredensial, setUserCredensial] = useState(
-    reactLocalStorage.getObject("user")
-  );
+  const userCredensial = reactLocalStorage.getObject("user");
+
   const [rows, setRows] = useState([]);
   const [totalMonth, setTotalMonth] = useState(0);
   const [totalYear, setTotalYear] = useState(0);
 
   useEffect(() => {
-    setLoading(false);
-  }, [rows]);
-
-  useEffect(() => {
     setLoading(true);
-    const getTimeUser = Axios.get(
+    Axios.get(
       `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
     )
       .then((server) => {
@@ -109,6 +104,9 @@ const Dashboard = () => {
         } else {
           console.log("Error", error.message);
         }
+      })
+      .finally(function () {
+        setLoading(false);
       });
   }, []);
 

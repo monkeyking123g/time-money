@@ -35,7 +35,7 @@ const CustomDataGrid = ({
     return (
       <GridToolbarContainer>
         <GridToolbarColumnsButton />
-        <GridToolbarFilterButton />
+        {isNonMobile ? <GridToolbarFilterButton /> : undefined}
         <GridToolbarDensitySelector />
         <GridToolbarExport />
         <IconButton sx={{ ml: "auto" }} onClick={onPurge}>

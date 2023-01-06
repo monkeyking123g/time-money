@@ -1,9 +1,9 @@
-import * as React from "react";
+import { useState } from "react";
 import { Box, useTheme, Button, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import Header from "../../components/Header";
-
+import CircularIndeterminate from "../../components/Circular";
 import { tokens } from "../../theme";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useStyledButton, useStyledTextField } from "../../styleComponent";
@@ -39,7 +39,8 @@ const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [stateSuccessfully, setStateSuccessfully] = React.useState({
+  const [loading, setLoading] = useState(false);
+  const [stateSuccessfully, setStateSuccessfully] = useState({
     state: false,
     title: "",
   });
@@ -53,14 +54,13 @@ const Form = () => {
     hoverColor: colors.pink[500],
   });
   // const CustomInputGlobaol = useStyleInputGlobal({ color: colors.grey[800] });
-  const [value, setValue] = React.useState(
-    dayjs(new Date()).format("YYYY-MM-DD")
-  );
-  const [userCredensial, setUserCredensial] = React.useState(
+  const [value, setValue] = useState(dayjs(new Date()).format("YYYY-MM-DD"));
+  const [userCredensial, setUserCredensial] = useState(
     reactLocalStorage.getObject("user")
   );
 
   const handleFormSubmit = (values, actions) => {
+    setLoading(true);
     // Slice number float
     function precisionRound(number, precision) {
       let factor = Math.pow(10, precision);
@@ -74,30 +74,43 @@ const Form = () => {
     const durationInMinutes = durationInSecondes / 60;
     const durationInHours = durationInMinutes / 60;
 
-    console.log(precisionRound(durationInHours, 2));
+    // console.log(precisionRound(durationInHours, 2));
     const newValuse = Object.assign(values, {
       total: precisionRound(durationInHours, 2),
     });
-    console.log(newValuse);
+    // console.log(newValuse);
     Axios.post(
       `${process.env.REACT_APP_DOMAIN}/api/create/time/${userCredensial.id}`,
       newValuse,
       {}
-    ).then((res) => {
-      console.log(res);
-      if (res.status === 200) {
-        setStateSuccessfully({ state: true, title: "Successfully Created." });
-      }
-    });
-    actions.setSubmitting(false);
-    actions.resetForm({
-      values: {
-        companyName: "",
-        startHour: "",
-        endHour: "",
-        dateCreate: dayjs(new Date()).locale("it").format("YYYY-MM-DD"),
-      },
-    });
+    )
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          setStateSuccessfully({ state: true, title: "Successfully Created." });
+        }
+      })
+      .catch(function (error) {
+        if (error.response) {
+          console.log(error.response.status);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+      })
+      .finally(function () {
+        actions.setSubmitting(false);
+        actions.resetForm({
+          values: {
+            companyName: "",
+            startHour: "",
+            endHour: "",
+            dateCreate: dayjs(new Date()).locale("it").format("YYYY-MM-DD"),
+          },
+        });
+        setLoading(false);
+      });
   };
   return (
     <Box m="20px">
@@ -106,11 +119,15 @@ const Form = () => {
         setSnackbarOpen={setStateSuccessfully}
         severity="success"
       />
-      <Header
-        title="Sum by Day "
-        TitleColor={colors.pink[600]}
-        subtitle="Created a New Time by Day"
-      ></Header>
+      <Box display="flex" justifyContent="space-between" mb="20px">
+        <Header
+          title="Sum by Day "
+          TitleColor={colors.pink[600]}
+          subtitle="Created a New Time by Day"
+        />
+        {loading ? <CircularIndeterminate /> : <Box display="flex" p="20px" />}
+      </Box>
+
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}

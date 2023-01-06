@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Sidebar, Menu, MenuItem, useProSidebar } from "react-pro-sidebar";
+import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 //import "react-pro-sidebar/dist/css/styles.css";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -35,7 +35,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   );
 };
 
-const SideBar = ({ shadow = false, credential }) => {
+const SideBar = ({ shadow = false }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -60,7 +60,7 @@ const SideBar = ({ shadow = false, credential }) => {
 
   useEffect(() => {
     const user = reactLocalStorage.getObject("user");
-    if (!userCredensial.id && user.id) {
+    if (userCredensial.id !== user.id) {
       setUserCredensial({ ...user });
     }
   }, [reactLocalStorage.getObject("user")]);

@@ -1,10 +1,9 @@
 // export default Calendar;
 import css from "../../fullcalendar-vars.css";
-// import { rows } from "../time";
-import React from "react";
+
 import { useState, useEffect } from "react";
 import FullCalendar, { formatDate } from "@fullcalendar/react";
-
+import CircularIndeterminate from "../../components/Circular";
 //import allLocales from "@fullcalendar/core/locales-all";
 import itLocale from "@fullcalendar/core/locales/it";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -12,7 +11,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import FormDialog from "../../components/Dialog";
-import { useStyledTextField } from "../../styleComponent";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import dayjs from "dayjs";
 import Axios from "axios";
@@ -33,16 +31,14 @@ const Calendar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [currentEvents, setCurrentEvents] = useState([]);
-  // const [togglePop, setTogglePop] = useState(false);
-  // const [error, setError] = useState(false);
   const [time, setTime] = useState({});
   const [dataAweit, setDataAweit] = useState(false);
   const [open, setOpen] = useState(false);
   const [calendarApiGlobal, setCalendarApiGlobal] = useState();
   const [data, setData] = useState([]);
-  const [userCredensial, setUserCredensial] = React.useState(
-    reactLocalStorage.getObject("user")
-  );
+  const userCredensial = reactLocalStorage.getObject("user");
+  const [loading, setLoading] = useState(false);
+
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const handleOpen = () => {
     setOpen(true);
@@ -54,26 +50,35 @@ const Calendar = () => {
     setData(response.data);
   };
 
-  useEffect(() => {}, [data]);
-
   useEffect(() => {
-    const GetData = async () => {
-      const response = await Axios.get(
-        `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
-      );
-      setData(response.data);
-      const newRow = response.data.map((element) => {
-        return {
-          id: element.ID,
-          title: `${element.start.slice(0, 5)} - ${element.end.slice(0, 5)}`,
-          date: dayjs(element.dateCreated).format("YYYY-MM-DD"),
-          display: "list-item",
-        };
+    setLoading(true);
+    Axios.get(
+      `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
+    )
+      .then((response) => {
+        setData(response.data);
+        const newRow = response.data.map((element) => {
+          return {
+            id: element.ID,
+            title: `${element.start.slice(0, 5)} - ${element.end.slice(0, 5)}`,
+            date: dayjs(element.dateCreated).format("YYYY-MM-DD"),
+            display: "list-item",
+          };
+        });
+        setHours(newRow);
+      })
+      .catch(function (error) {
+        if (error.response) {
+          console.log(error.response.status);
+        } else if (error.request) {
+          console.log(error.request);
+        } else {
+          console.log("Error", error.message);
+        }
+      })
+      .finally(function () {
+        setLoading(false);
       });
-
-      setHours(newRow);
-    };
-    GetData();
   }, []);
 
   useEffect(() => {
@@ -113,15 +118,12 @@ const Calendar = () => {
         values,
         {}
       )
-        .then((res) => {
-          if (res.status === 200) {
-            console.log("OK");
-          }
-        })
         .catch((error) => {
           console.log(error);
+        })
+        .finally(() => {
+          dataReset();
         });
-      dataReset();
     }
   }, [dataAweit]);
 
@@ -130,20 +132,18 @@ const Calendar = () => {
     setDataAweit(true);
   };
   const handleDateClick = (selected) => {
-    const openPopWindow = handleOpen();
+    handleOpen();
     setCalendarApiGlobal(selected);
   };
   const handleClosePopwindow = () => {
     setOpen(false);
   };
   const handleEventClick = (selected) => {
-    console.log(selected.event.id);
     if (
       window.confirm(
         `Are you sure you want to delete the event '${selected.event.title}'`
       )
     ) {
-      console.log(selected.event);
       Axios.delete(
         `${process.env.REACT_APP_DOMAIN}/api/delete/time/${selected.event.id}`
       );
@@ -155,11 +155,14 @@ const Calendar = () => {
       {open ? (
         <FormDialog clous={handleClosePopwindow} pull={pull_data} />
       ) : null}
-      <Header
-        title="Calendar"
-        TitleColor={colors.pink[500]}
-        subtitle="Full Calendar Interactive Page"
-      />
+      <Box display="flex" justifyContent="space-between">
+        <Header
+          title="Calendar"
+          TitleColor={colors.pink[500]}
+          subtitle="Full Calendar Interactive Page"
+        />
+        {loading ? <CircularIndeterminate /> : <Box display="flex" p="20px" />}
+      </Box>
 
       <Box display="flex" justifyContent="space-between">
         {/* CALENDAR SIDEBAR */}
@@ -170,37 +173,42 @@ const Calendar = () => {
           borderRadius="4px"
           display={isNonMobile ? undefined : "none"}
         >
-          <Typography variant="h5">Events</Typography>
-          <List>
-            {data.slice(Math.max(data.length - 7, 0)).map((event) => (
-              <ListItem
-                key={event.ID}
-                sx={{
-                  backgroundColor: colors.primary[500],
-                  color: "#000",
-                  margin: "10px 0",
-                  borderRadius: "2px",
-                }}
-              >
-                <ListItemText
-                  primary={event.company}
-                  secondary={
-                    <Typography component={"span"}>
-                      {"Total  " + event.total + "."}
-                      <br />
+          <Typography variant="h5">Last Events</Typography>
+          {loading ? (
+            <CircularIndeterminate />
+          ) : (
+            <List>
+              {data.slice(Math.max(data.length - 8, 0)).map((event) => (
+                <ListItem
+                  key={event.ID}
+                  sx={{
+                    backgroundColor: colors.primary[500],
+                    color: "#000",
+                    margin: "10px 0",
+                    borderRadius: "2px",
+                  }}
+                >
+                  <ListItemText
+                    // primary={event.company}
+                    secondary={
                       <Typography component={"span"}>
-                        {formatDate(event.dateCreated, {
-                          year: "numeric",
-                          month: "short",
-                          day: "numeric",
-                        })}
+                        {"Total : " + event.total + " hour."}
+                        <br />
+                        <Typography component={"span"}>
+                          {"Date : " +
+                            formatDate(event.dateCreated, {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })}
+                        </Typography>
                       </Typography>
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            ))}
-          </List>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          )}
         </Box>
 
         {/* CALENDAR */}
