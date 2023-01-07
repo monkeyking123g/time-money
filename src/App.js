@@ -28,13 +28,17 @@ function App() {
   const [isSidebar, setIsSidebar] = useState(true);
   const [shadows, setShadows] = useState(false);
 
-  const userCredensial = reactLocalStorage.getObject("user");
+  const [userCredensial, setUserCredensial] = useState(
+    reactLocalStorage.getObject("user")
+  );
+  console.log(userCredensial);
 
   let navigate = useNavigate();
   let location = useLocation();
 
   React.useEffect(() => {
     if (JSON.stringify(userCredensial) === "{}") {
+      console.log("bag");
       return navigate("/singin");
     }
   }, [userCredensial]);
