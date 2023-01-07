@@ -50,7 +50,12 @@ const SingUn = ({ handleSingIn, imageUser }) => {
 
   const handleFormSubmit = async (values) => {
     setLoading(true);
-
+    // const config = {
+    //   headers: {
+    //     "Access-Control-Allow-Origin": "*",
+    //     "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    //   },
+    // };
     try {
       const formData = new FormData();
       formData.append("image", imageUser);
@@ -90,10 +95,12 @@ const SingUn = ({ handleSingIn, imageUser }) => {
           state: true,
           title: "Server error sorry  !",
         });
-      } else if (error.request) {
-        console.log(error.request);
       } else {
         console.log("Error", error.message);
+        setStateError({
+          state: true,
+          title: "Server not response  !",
+        });
       }
     } finally {
       setLoading(false);

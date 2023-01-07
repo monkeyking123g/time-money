@@ -33,55 +33,61 @@ const SingIn = ({ handleSingUp }) => {
     }
   }, [authenticated]);
 
-  const handleSubmit = (event) => {
-    setLoading(true); // loading data
+  const handleSubmit = async (event) => {
+    // loading data
     event.preventDefault();
+    setLoading(true);
+    const config = {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      },
+    };
 
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_DOMAIN}/api/get/user`,
+        config
+      );
 
-    Axios.get(`${process.env.REACT_APP_DOMAIN}/api/get/user`)
-      .then((user) => {
-        const currentUser = user.data.find(
-          (currUserResponse) =>
-            currUserResponse.email === email &&
-            currUserResponse.password === password
-        );
+      const currentUser = response.data.find(
+        (currUserResponse) =>
+          currUserResponse.email === email &&
+          currUserResponse.password === password
+      );
 
-        if (currentUser) {
-          console.log("User faund !");
-          reactLocalStorage.setObject("user", {
-            id: currentUser.ID,
-            email: currentUser.email,
-            password: currentUser.password,
-            image: currentUser.image_url,
-            ernin_hour: currentUser.earning_hour,
-          });
-          isAuthenticated(true);
-        } else {
-          setStateError({
-            state: true,
-            title: "Email or Password Incorrect !",
-          });
-        }
-      })
-      .catch(function (error) {
-        if (error.response) {
-          console.log(error.response.status);
-          setStateError({
-            state: true,
-            title: "Server error sorry !",
-          });
-        } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log("Error", error.message);
-        }
-      })
-      .finally((_result) => {
-        setLoading(false);
-      });
+      if (currentUser) {
+        console.log("User faund !");
+        reactLocalStorage.setObject("user", {
+          id: currentUser.ID,
+          email: currentUser.email,
+          password: currentUser.password,
+          image: currentUser.image_url,
+          ernin_hour: currentUser.earning_hour,
+        });
+        isAuthenticated(true);
+      } else {
+        setStateError({
+          state: true,
+          title: "Email or Password Incorrect !",
+        });
+      }
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.status);
+      } else {
+        setStateError({
+          state: true,
+          title: "Server not response !",
+        });
+        console.log("Error", error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -105,10 +111,10 @@ const SingIn = ({ handleSingUp }) => {
         label="Email Address"
         name="email"
         autoComplete="email"
-        autoFocus
-        sx={{
-          "input:-webkit-autofill": { caretColor: "#fff" },
-        }}
+        // autoFocus
+        // sx={{
+        //   "input:-webkit-autofill": { caretColor: "#fff" },
+        // }}
       />
       <TextField
         margin="normal"
@@ -117,11 +123,10 @@ const SingIn = ({ handleSingUp }) => {
         name="password"
         label="Password"
         type="password"
-        id="password"
         autoComplete="current-password"
-        sx={{
-          "input:-webkit-autofill": { caretColor: "#fff" },
-        }}
+        // sx={{
+        //   "input:-webkit-autofill": { caretColor: "#fff" },
+        // }}
       />
 
       <FormControlLabel
