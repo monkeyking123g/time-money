@@ -28,7 +28,6 @@ const SingIn = ({ handleSingUp }) => {
   useEffect(() => {
     if (authenticated) {
       console.log("User is authentificated");
-      setLoading(false);
       return navigate("/");
     }
   }, [authenticated]);
@@ -49,8 +48,7 @@ const SingIn = ({ handleSingUp }) => {
     const password = formData.get("password");
     try {
       const response = await Axios.get(
-        `${process.env.REACT_APP_DOMAIN}/api/get/user`,
-        config
+        `${process.env.REACT_APP_DOMAIN}/api/get/user`
       );
 
       const currentUser = response.data.find(

@@ -73,40 +73,36 @@ const LineChart = ({ isDashboard = false }) => {
   const [data, setData] = useState([]);
   useEffect(() => {
     // setloading(true);
-    Axios.get(
-      `${process.env.REACT_APP_DOMAIN}/api/get/month/${userCredensial.id}`
-    )
-      .then((server) => {
-        if (server.status === 200) {
+    const loadData = async () => {
+      try {
+        const response = await Axios.get(
+          `${process.env.REACT_APP_DOMAIN}/api/get/month/${userCredensial.id}`
+        );
+
+        if (response.status === 200) {
           Data[0].data.forEach((month) => {
             const currentYear = dayjs().locale("it").year();
 
-            let ispresent = server.data.find((get) => {
+            let ispresent = response.data.find((get) => {
               const yearX = +get.month.match(/\d/g).join("");
               const monthX = get.month.replace(/\d+/g, "").trim();
 
               return yearX === currentYear && monthX === month.x;
             });
-            // get.month.replace(/\d+/g, "").trim() === month.x &&
-            //   get.month.match(/\d/g).join("") === currentYear
 
             if (ispresent) month.y = ispresent.total;
           });
           setData(Data);
         }
-      })
-      .catch(function (error) {
+      } catch (error) {
         if (error.response) {
           console.log(error.response.status);
-        } else if (error.request) {
-          console.log(error.request);
         } else {
           console.log("Error", error.message);
         }
-      })
-      .finally(function () {
-        // setloading(false);
-      });
+      }
+    };
+    loadData();
   }, []);
   return (
     <ResponsiveLine

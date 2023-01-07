@@ -58,31 +58,18 @@ const FormMonth = () => {
   });
   // const CustomInputGlobaol = useStyleInputGlobal({ color: colors.grey[800] });
 
-  const handleFormSubmit = (values, actions) => {
+  const handleFormSubmit = async (values, actions) => {
     setLoading(true);
-    Axios.post(
-      `${process.env.REACT_APP_DOMAIN}/api/create/month/${userCredensial.id}`,
-      values,
-      {}
-    )
-      .then((res) => {
-        if (res.status === 200) {
-          setStateSuccessfully({
-            state: true,
-            title: "Successfully Created.",
-          });
-        }
-      })
-      .catch(function (error) {
-        if (error.response) {
-          console.log(error.response.status);
-        } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log("Error", error.message);
-        }
-      })
-      .finally(function () {
+    try {
+      const response = await Axios.post(
+        `${process.env.REACT_APP_DOMAIN}/api/create/month/${userCredensial.id}`,
+        values
+      );
+      if (response.status === 200) {
+        setStateSuccessfully({
+          state: true,
+          title: "Successfully Created.",
+        });
         actions.setSubmitting(false);
         actions.resetForm({
           values: {
@@ -92,8 +79,16 @@ const FormMonth = () => {
           },
         });
         setMonthValue(null);
-        setLoading(false);
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.status);
+      } else {
+        console.log("Error", error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <Box m="20px">

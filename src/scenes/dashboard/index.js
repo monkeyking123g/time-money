@@ -60,15 +60,16 @@ const Dashboard = () => {
 
   useEffect(() => {
     setLoading(true);
-    Axios.get(
-      `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
-    )
-      .then((server) => {
-        setRows(server.data);
+    const loadData = async () => {
+      try {
+        const response = await Axios.get(
+          `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
+        );
+        setRows(response.data);
         const currentMonth = dayjs(new Date()).locale("it").format("MM");
         const currentYear = dayjs(new Date()).locale("it").format("YYYY");
 
-        const eventsMonth = server.data.filter((e) => {
+        const eventsMonth = response.data.filter((e) => {
           const dataFromUser = dayjs(e.dateCreated)
             .locale("it")
             .format("YYYY-MM-DD");
@@ -82,7 +83,7 @@ const Dashboard = () => {
           calcolatetotalMonth += element.total;
         });
         setTotalMonth(precisionRound(calcolatetotalMonth, 2));
-        const eventsYear = server.data.filter((e) => {
+        const eventsYear = response.data.filter((e) => {
           const dataFromUser = dayjs(e.dateCreated)
             .locale("it")
             .format("YYYY-MM-DD");
@@ -95,19 +96,17 @@ const Dashboard = () => {
           calcolatetotalYear += element.total;
         });
         setTotalYear(precisionRound(calcolatetotalYear, 2));
-      })
-      .catch(function (error) {
+      } catch (error) {
         if (error.response) {
           console.log(error.response.status);
-        } else if (error.request) {
-          console.log(error.request);
         } else {
           console.log("Error", error.message);
         }
-      })
-      .finally(function () {
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+    loadData();
   }, []);
 
   //  Calcolate data from Dashboard

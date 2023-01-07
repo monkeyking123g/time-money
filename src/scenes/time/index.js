@@ -67,14 +67,16 @@ const ListTime = () => {
 
   useEffect(() => {
     setLoading(true);
-    const newData = [];
-    Axios.get(
-      `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
-    )
-      .then((server) => {
-        if (server.status === 200) {
+    const loadData = async () => {
+      try {
+        const newData = [];
+        const response = await Axios.get(
+          `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
+        );
+
+        if (response.status === 200) {
           let nam = 1;
-          server.data.map((el) => {
+          response.data.map((el) => {
             const updateData = {
               id: el.ID,
               nam: nam,
@@ -90,19 +92,17 @@ const ListTime = () => {
         }
         //  setRowsData(rowsData => [...rowsData, newdata])
         setRows(newData);
-      })
-      .catch(function (error) {
+      } catch (error) {
         if (error.response) {
           console.log(error.response.status);
-        } else if (error.request) {
-          console.log(error.request);
         } else {
           console.log("Error", error.message);
         }
-      })
-      .finally(function () {
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+    loadData();
   }, []);
   const handleSelectionChange = (selection) => {
     setSelectedRows(selection);

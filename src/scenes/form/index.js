@@ -59,47 +59,33 @@ const Form = () => {
     reactLocalStorage.getObject("user")
   );
 
-  const handleFormSubmit = (values, actions) => {
+  const handleFormSubmit = async (values, actions) => {
     setLoading(true);
     // Slice number float
+
     function precisionRound(number, precision) {
       let factor = Math.pow(10, precision);
       return Math.round(number * factor) / factor;
     }
+    try {
+      const startTimeTs = new Date(`2022-01-01 ${values.startHour}`).valueOf();
+      const endTimeTs = new Date(`2022-01-01 ${values.endHour}`).valueOf();
+      const durationTs = endTimeTs - startTimeTs;
+      const durationInSecondes = durationTs / 1000;
+      const durationInMinutes = durationInSecondes / 60;
+      const durationInHours = durationInMinutes / 60;
 
-    const startTimeTs = new Date(`2022-01-01 ${values.startHour}`).valueOf();
-    const endTimeTs = new Date(`2022-01-01 ${values.endHour}`).valueOf();
-    const durationTs = endTimeTs - startTimeTs;
-    const durationInSecondes = durationTs / 1000;
-    const durationInMinutes = durationInSecondes / 60;
-    const durationInHours = durationInMinutes / 60;
-
-    // console.log(precisionRound(durationInHours, 2));
-    const newValuse = Object.assign(values, {
-      total: precisionRound(durationInHours, 2),
-    });
-    // console.log(newValuse);
-    Axios.post(
-      `${process.env.REACT_APP_DOMAIN}/api/create/time/${userCredensial.id}`,
-      newValuse,
-      {}
-    )
-      .then((res) => {
-        console.log(res);
-        if (res.status === 200) {
-          setStateSuccessfully({ state: true, title: "Successfully Created." });
-        }
-      })
-      .catch(function (error) {
-        if (error.response) {
-          console.log(error.response.status);
-        } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log("Error", error.message);
-        }
-      })
-      .finally(function () {
+      // console.log(precisionRound(durationInHours, 2));
+      const newValuse = Object.assign(values, {
+        total: precisionRound(durationInHours, 2),
+      });
+      // console.log(newValuse);
+      const response = await Axios.post(
+        `${process.env.REACT_APP_DOMAIN}/api/create/time/${userCredensial.id}`,
+        newValuse
+      );
+      if (response.status === 200) {
+        setStateSuccessfully({ state: true, title: "Successfully Created." });
         actions.setSubmitting(false);
         actions.resetForm({
           values: {
@@ -109,8 +95,16 @@ const Form = () => {
             dateCreate: dayjs(new Date()).locale("it").format("YYYY-MM-DD"),
           },
         });
-        setLoading(false);
-      });
+      }
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.status);
+      } else {
+        console.log("Error", error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <Box m="20px">

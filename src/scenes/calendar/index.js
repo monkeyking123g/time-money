@@ -44,18 +44,27 @@ const Calendar = () => {
     setOpen(true);
   };
   const dataReset = async () => {
-    const response = await Axios.get(
-      `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
-    );
-    setData(response.data);
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
+      );
+      setData(response.data);
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.status);
+      } else {
+        console.log("Error", error.message);
+      }
+    }
   };
 
   useEffect(() => {
     setLoading(true);
-    Axios.get(
-      `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
-    )
-      .then((response) => {
+    const loadData = async () => {
+      try {
+        const response = await Axios.get(
+          `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
+        );
         setData(response.data);
         const newRow = response.data.map((element) => {
           return {
@@ -66,64 +75,65 @@ const Calendar = () => {
           };
         });
         setHours(newRow);
-      })
-      .catch(function (error) {
+      } catch (error) {
         if (error.response) {
           console.log(error.response.status);
-        } else if (error.request) {
-          console.log(error.request);
         } else {
           console.log("Error", error.message);
         }
-      })
-      .finally(function () {
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+    loadData();
   }, []);
 
   useEffect(() => {
     if (dataAweit) {
-      const calendar = calendarApiGlobal.view.calendar;
-      console.log(calendarApiGlobal.dateStr);
-      calendar.unselect();
-      calendar.addEvent({
-        id: `${time.endHour}-${time.startHour}`,
-        title: `${time.startHour} - ${time.endHour}`,
-        date: calendarApiGlobal.dateStr, // a property!
-        display: "list-item",
-      });
-      setDataAweit(false);
-      handleClosePopwindow();
-
-      function precisionRound(number, precision) {
-        let factor = Math.pow(10, precision);
-        return Math.round(number * factor) / factor;
-      }
-
-      const startTimeTs = new Date(`2022-01-01 ${time.startHour}`).valueOf();
-      const endTimeTs = new Date(`2022-01-01 ${time.endHour}`).valueOf();
-      const durationTs = endTimeTs - startTimeTs;
-      const durationInSecondes = durationTs / 1000;
-      const durationInMinutes = durationInSecondes / 60;
-      const durationInHours = durationInMinutes / 60;
-      const values = {
-        companyName: "",
-        startHour: time.startHour,
-        endHour: time.endHour,
-        total: precisionRound(durationInHours, 2),
-        dateCreate: calendarApiGlobal.dateStr,
-      };
-      Axios.post(
-        `${process.env.REACT_APP_DOMAIN}/api/create/time/${userCredensial.id}`,
-        values,
-        {}
-      )
-        .catch((error) => {
-          console.log(error);
-        })
-        .finally(() => {
-          dataReset();
+      try {
+        const calendar = calendarApiGlobal.view.calendar;
+        console.log(calendarApiGlobal.dateStr);
+        calendar.unselect();
+        calendar.addEvent({
+          id: `${time.endHour}-${time.startHour}`,
+          title: `${time.startHour} - ${time.endHour}`,
+          date: calendarApiGlobal.dateStr, // a property!
+          display: "list-item",
         });
+        setDataAweit(false);
+        handleClosePopwindow();
+
+        function precisionRound(number, precision) {
+          let factor = Math.pow(10, precision);
+          return Math.round(number * factor) / factor;
+        }
+
+        const startTimeTs = new Date(`2022-01-01 ${time.startHour}`).valueOf();
+        const endTimeTs = new Date(`2022-01-01 ${time.endHour}`).valueOf();
+        const durationTs = endTimeTs - startTimeTs;
+        const durationInSecondes = durationTs / 1000;
+        const durationInMinutes = durationInSecondes / 60;
+        const durationInHours = durationInMinutes / 60;
+        const values = {
+          companyName: "",
+          startHour: time.startHour,
+          endHour: time.endHour,
+          total: precisionRound(durationInHours, 2),
+          dateCreate: calendarApiGlobal.dateStr,
+        };
+        const response = Axios.post(
+          `${process.env.REACT_APP_DOMAIN}/api/create/time/${userCredensial.id}`,
+          values
+        );
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.status);
+        } else {
+          console.log("Error", error.message);
+        }
+      } finally {
+        dataReset();
+      }
     }
   }, [dataAweit]);
 

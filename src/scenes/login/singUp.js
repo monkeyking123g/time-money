@@ -50,6 +50,11 @@ const SingUn = ({ handleSingIn, imageUser }) => {
 
   const handleFormSubmit = async (values) => {
     setLoading(true);
+    const formData = new FormData();
+    formData.append("image", imageUser);
+    formData.append("email", values.email);
+    formData.append("password", values.password);
+    formData.append("earning_hour", values.earningHour);
     // const config = {
     //   headers: {
     //     "Access-Control-Allow-Origin": "*",
@@ -57,12 +62,6 @@ const SingUn = ({ handleSingIn, imageUser }) => {
     //   },
     // };
     try {
-      const formData = new FormData();
-      formData.append("image", imageUser);
-      formData.append("email", values.email);
-      formData.append("password", values.password);
-      formData.append("earning_hour", values.earningHour);
-
       await Axios.post(`${process.env.REACT_APP_DOMAIN}/upload`, formData, {});
 
       const currentUserResponse = await Axios.get(
