@@ -55,15 +55,21 @@ const SingUn = ({ handleSingIn, imageUser }) => {
     formData.append("email", values.email);
     formData.append("password", values.password);
     formData.append("earning_hour", values.earningHour);
-    // const config = {
-    //   headers: {
-    //     "Access-Control-Allow-Origin": "*",
-    //     "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-    //   },
-    // };
-    try {
-      await Axios.post(`${process.env.REACT_APP_DOMAIN}/upload`, formData, {});
+    const config = {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      },
+    };
 
+    try {
+      console.log(formData);
+      await Axios.post(
+        `${process.env.REACT_APP_DOMAIN}/upload`,
+        formData,
+        config
+      );
+      console.log(formData + "pass");
       const currentUserResponse = await Axios.get(
         `${process.env.REACT_APP_DOMAIN}/api/get/user`
       );
