@@ -31,7 +31,6 @@ function App() {
   const [userCredensial, setUserCredensial] = useState(
     reactLocalStorage.getObject("user")
   );
-  console.log(userCredensial);
 
   let navigate = useNavigate();
   let location = useLocation();

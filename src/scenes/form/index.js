@@ -44,6 +44,13 @@ const Form = () => {
     state: false,
     title: "",
   });
+
+  const config = {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    },
+  };
   //   const CustomTextField = useStyledTextField({ color: colors.pink[500] });
   const CustomTextField = useStyledTextField({
     color: colors.pink[500],
@@ -82,7 +89,8 @@ const Form = () => {
       // console.log(newValuse);
       const response = await Axios.post(
         `${process.env.REACT_APP_DOMAIN}/api/create/time/${userCredensial.id}`,
-        newValuse
+        newValuse,
+        config
       );
       if (response.status === 200) {
         setStateSuccessfully({ state: true, title: "Successfully Created." });

@@ -70,16 +70,24 @@ const LineChart = ({ isDashboard = false }) => {
   const colors = tokens(theme.palette.mode);
   const userCredensial = reactLocalStorage.getObject("user");
 
+  const config = {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    },
+  };
+
   const [data, setData] = useState([]);
   useEffect(() => {
     // setloading(true);
     const loadData = async () => {
       try {
         const response = await Axios.get(
-          `${process.env.REACT_APP_DOMAIN}/api/get/month/${userCredensial.id}`
+          `${process.env.REACT_APP_DOMAIN}/api/get/month/${userCredensial.id}`,
+          config
         );
 
-        if (response.status === 200) {
+        if (Array.isArray(response.data)) {
           Data[0].data.forEach((month) => {
             const currentYear = dayjs().locale("it").year();
 

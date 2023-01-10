@@ -58,44 +58,56 @@ const Dashboard = () => {
   const [totalMonth, setTotalMonth] = useState(0);
   const [totalYear, setTotalYear] = useState(0);
 
+  const config = {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    },
+  };
+
   useEffect(() => {
     setLoading(true);
+
     const loadData = async () => {
       try {
         const response = await Axios.get(
-          `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
+          `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`,
+          config
         );
-        setRows(response.data);
-        const currentMonth = dayjs(new Date()).locale("it").format("MM");
-        const currentYear = dayjs(new Date()).locale("it").format("YYYY");
 
-        const eventsMonth = response.data.filter((e) => {
-          const dataFromUser = dayjs(e.dateCreated)
-            .locale("it")
-            .format("YYYY-MM-DD");
-          var [year, month] = dataFromUser.split("-"); // Or, var month = e.date.split('-')[1];
+        if (Array.isArray(response.data)) {
+          setRows(response.data);
+          const currentMonth = dayjs(new Date()).locale("it").format("MM");
+          const currentYear = dayjs(new Date()).locale("it").format("YYYY");
 
-          return +currentMonth === +month && currentYear == year;
-        });
-        //console.log(eventsMonth);
-        let calcolatetotalMonth = 0;
-        eventsMonth.forEach((element) => {
-          calcolatetotalMonth += element.total;
-        });
-        setTotalMonth(precisionRound(calcolatetotalMonth, 2));
-        const eventsYear = response.data.filter((e) => {
-          const dataFromUser = dayjs(e.dateCreated)
-            .locale("it")
-            .format("YYYY-MM-DD");
+          const eventsMonth = response.data.filter((e) => {
+            const dataFromUser = dayjs(e.dateCreated)
+              .locale("it")
+              .format("YYYY-MM-DD");
+            var [year, month] = dataFromUser.split("-"); // Or, var month = e.date.split('-')[1];
 
-          var [year] = dataFromUser.split("-"); // Or, var month = e.date.split('-')[1];
-          return currentYear == year;
-        });
-        let calcolatetotalYear = 0;
-        eventsYear.forEach((element) => {
-          calcolatetotalYear += element.total;
-        });
-        setTotalYear(precisionRound(calcolatetotalYear, 2));
+            return +currentMonth === +month && currentYear == year;
+          });
+          //console.log(eventsMonth);
+          let calcolatetotalMonth = 0;
+          eventsMonth.forEach((element) => {
+            calcolatetotalMonth += element.total;
+          });
+          setTotalMonth(precisionRound(calcolatetotalMonth, 2));
+          const eventsYear = response.data.filter((e) => {
+            const dataFromUser = dayjs(e.dateCreated)
+              .locale("it")
+              .format("YYYY-MM-DD");
+
+            var [year] = dataFromUser.split("-"); // Or, var month = e.date.split('-')[1];
+            return currentYear == year;
+          });
+          let calcolatetotalYear = 0;
+          eventsYear.forEach((element) => {
+            calcolatetotalYear += element.total;
+          });
+          setTotalYear(precisionRound(calcolatetotalYear, 2));
+        }
       } catch (error) {
         if (error.response) {
           console.log(error.response.status);
@@ -305,7 +317,6 @@ const Dashboard = () => {
               borderBottom={`2px solid ${colors.grey[800]}`}
               p="15px"
             >
-              {/* {(i += 1)} */}
               <Box>
                 <Typography
                   color={colors.grey[600]}

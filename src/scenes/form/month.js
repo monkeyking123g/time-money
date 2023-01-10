@@ -57,13 +57,20 @@ const FormMonth = () => {
     hoverColor: colors.pink[500],
   });
   // const CustomInputGlobaol = useStyleInputGlobal({ color: colors.grey[800] });
+  const config = {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    },
+  };
 
   const handleFormSubmit = async (values, actions) => {
     setLoading(true);
     try {
       const response = await Axios.post(
         `${process.env.REACT_APP_DOMAIN}/api/create/month/${userCredensial.id}`,
-        values
+        values,
+        config
       );
       if (response.status === 200) {
         setStateSuccessfully({

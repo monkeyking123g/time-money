@@ -65,16 +65,24 @@ const ListTime = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const config = {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    },
+  };
+
   useEffect(() => {
     setLoading(true);
     const loadData = async () => {
       try {
         const newData = [];
         const response = await Axios.get(
-          `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
+          `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`,
+          config
         );
 
-        if (response.status === 200) {
+        if (Array.isArray(response.data)) {
           let nam = 1;
           response.data.map((el) => {
             const updateData = {

@@ -38,15 +38,23 @@ const Calendar = () => {
   const [data, setData] = useState([]);
   const userCredensial = reactLocalStorage.getObject("user");
   const [loading, setLoading] = useState(false);
-
   const isNonMobile = useMediaQuery("(min-width:600px)");
+
+  const config = {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+    },
+  };
+
   const handleOpen = () => {
     setOpen(true);
   };
   const dataReset = async () => {
     try {
       const response = await Axios.get(
-        `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
+        `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`,
+        config
       );
       setData(response.data);
     } catch (error) {
@@ -63,18 +71,24 @@ const Calendar = () => {
     const loadData = async () => {
       try {
         const response = await Axios.get(
-          `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`
+          `${process.env.REACT_APP_DOMAIN}/api/get/time/${userCredensial.id}`,
+          config
         );
-        setData(response.data);
-        const newRow = response.data.map((element) => {
-          return {
-            id: element.ID,
-            title: `${element.start.slice(0, 5)} - ${element.end.slice(0, 5)}`,
-            date: dayjs(element.dateCreated).format("YYYY-MM-DD"),
-            display: "list-item",
-          };
-        });
-        setHours(newRow);
+        if (Array.isArray(response.data)) {
+          setData(response.data);
+          const newRow = response.data.map((element) => {
+            return {
+              id: element.ID,
+              title: `${element.start.slice(0, 5)} - ${element.end.slice(
+                0,
+                5
+              )}`,
+              date: dayjs(element.dateCreated).format("YYYY-MM-DD"),
+              display: "list-item",
+            };
+          });
+          setHours(newRow);
+        }
       } catch (error) {
         if (error.response) {
           console.log(error.response.status);
@@ -123,16 +137,16 @@ const Calendar = () => {
         };
         const response = Axios.post(
           `${process.env.REACT_APP_DOMAIN}/api/create/time/${userCredensial.id}`,
-          values
+          values,
+          config
         );
+        dataReset();
       } catch (error) {
         if (error.response) {
           console.log(error.response.status);
         } else {
           console.log("Error", error.message);
         }
-      } finally {
-        dataReset();
       }
     }
   }, [dataAweit]);
