@@ -1,7 +1,8 @@
 # time-money
 
-Progetto ordinare CRUD App [Url](https://time-money.vercel.app/)
+Progetto ordinare (CRUD) App
 Ti permette di salvare tempo lavorativo, sommare totale del mese , totale anno , calcolare guadagno mensile guadagno annuale e grafico a linee dei Mesi. Per entrare puoi registrarsi oppure entrare co test account.
+[url di sito](https://time-money.vercel.app/)
 
 ## email : admin@gmail.com
 
@@ -32,6 +33,7 @@ Ti permette di salvare tempo lavorativo, sommare totale del mese , totale anno ,
 
 - React
 - Node JS
+- Express
 - React UI
 - FullCalendar
 - Axios
